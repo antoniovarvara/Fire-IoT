@@ -11,11 +11,13 @@ using Microsoft.SPOT.Touch;
 using Gadgeteer.Networking;
 using GT = Gadgeteer;
 using GTM = Gadgeteer.Modules;
+using Gadgeteer.Modules.GHIElectronics;
 
 namespace NETMFBook
 {
     public partial class Program
     {
+        private bool status;
         // This method is run when the mainboard is powered up or reset.   
         void ProgramStarted()
         {
@@ -31,10 +33,18 @@ namespace NETMFBook
                 timer.Tick +=<tab><tab>
                 timer.Start();
             *******************************************************************************************/
-
+            GT.Timer timer = new GT.Timer(2000);
+            timer.Tick += timer_Tick;
+            timer.Start();
 
             // Use Debug.Print to show messages in Visual Studio's "Output" window during debugging.
             Debug.Print("Program Started");
+        }
+
+        void timer_Tick(GT.Timer timer)
+        {
+            status = !status;
+            Mainboard.SetDebugLED(status);
         }
     }
 }
