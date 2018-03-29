@@ -21,6 +21,15 @@ namespace NETMFBook {
         /// <summary>The Ethernet J11D module using socket 7 of the mainboard.</summary>
         private Gadgeteer.Modules.GHIElectronics.EthernetJ11D ethernetJ11D;
         
+        /// <summary>The Breakout module using socket 9 of the mainboard.</summary>
+        private Gadgeteer.Modules.GHIElectronics.Breakout breakout;
+        
+        /// <summary>The Display TE35 module using sockets 14, 13, 12 and 10 of the mainboard.</summary>
+        private Gadgeteer.Modules.GHIElectronics.DisplayTE35 displayTE35;
+        
+        /// <summary>The LED Strip module using socket 8 of the mainboard.</summary>
+        private Gadgeteer.Modules.GHIElectronics.LEDStrip ledStrip;
+        
         /// <summary>This property provides access to the Mainboard API. This is normally not necessary for an end user program.</summary>
         protected new static GHIElectronics.Gadgeteer.FEZSpiderII Mainboard {
             get {
@@ -45,6 +54,9 @@ namespace NETMFBook {
         private void InitializeModules() {
             this.usbClientDP = new GTM.GHIElectronics.USBClientDP(1);
             this.ethernetJ11D = new GTM.GHIElectronics.EthernetJ11D(7);
+            this.breakout = new GTM.GHIElectronics.Breakout(9);
+            this.displayTE35 = new GTM.GHIElectronics.DisplayTE35(14, 13, 12, 10);
+            this.ledStrip = new GTM.GHIElectronics.LEDStrip(8);
         }
     }
 }

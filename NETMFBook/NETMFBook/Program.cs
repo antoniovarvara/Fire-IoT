@@ -12,6 +12,7 @@ using Gadgeteer.Networking;
 using GT = Gadgeteer;
 using GTM = Gadgeteer.Modules;
 using Gadgeteer.Modules.GHIElectronics;
+using System.Text;
 
 namespace NETMFBook
 {
@@ -36,9 +37,31 @@ namespace NETMFBook
             GT.Timer timer = new GT.Timer(2000);
             timer.Tick += timer_Tick;
             timer.Start();
-
+            StatusLed.led = ledStrip;
+            StatusLed.led.SetLed(0, true);
+            Ethernet eth = new Ethernet(ethernetJ11D);
+            Mqtt mqtt = eth.MQTT;
+            mqtt.Publish("status", "ciao");
+            mqtt.Subscribe("led");
+            mqtt.PublishEvent += mqtt_PublishEvent;
             // Use Debug.Print to show messages in Visual Studio's "Output" window during debugging.
             Debug.Print("Program Started");
+
+        }
+
+        void mqtt_PublishEvent(object sender, uPLibrary.Networking.M2Mqtt.Messages.MqttMsgPublishEventArgs e)
+        {
+            if (e.Topic == "led")
+            {
+                /*
+                Application.Current.Dispatcher.Invoke(TimeSpan.Zero, (displayTE35obj) =>
+                {
+                    ((DisplayTE35)displayTE35obj).SimpleGraphics.DisplayText(new String(Encoding.UTF8.GetChars(e.Message)), Resources.GetFont(Resources.FontResources.NinaB), GT.Color.Blue, 10, 10);
+                    return 0;
+                }, displayTE35);
+            
+                 */
+           }
         }
 
         void timer_Tick(GT.Timer timer)
