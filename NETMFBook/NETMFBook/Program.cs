@@ -13,6 +13,7 @@ using GT = Gadgeteer;
 using GTM = Gadgeteer.Modules;
 using Gadgeteer.Modules.GHIElectronics;
 using System.Text;
+using NETMFBook.Sensors;
 
 namespace NETMFBook
 {
@@ -44,6 +45,8 @@ namespace NETMFBook
             mqtt.Publish("status", "ciao");
             mqtt.Subscribe("led");
             mqtt.PublishEvent += mqtt_PublishEvent;
+            TemperatureSensor ts = new TemperatureSensor(breakout.CreateAnalogInput(GT.Socket.Pin.Three), mqtt);
+            ts.publish();
             // Use Debug.Print to show messages in Visual Studio's "Output" window during debugging.
             Debug.Print("Program Started");
 
