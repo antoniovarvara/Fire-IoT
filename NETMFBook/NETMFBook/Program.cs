@@ -42,11 +42,14 @@ namespace NETMFBook
             StatusLed.led.SetLed(0, true);
             Ethernet eth = new Ethernet(ethernetJ11D);
             Mqtt mqtt = eth.MQTT;
+            TimeSync.update();
             mqtt.Publish("status", "ciao");
             mqtt.Subscribe("led");
             mqtt.PublishEvent += mqtt_PublishEvent;
             TemperatureSensor ts = new TemperatureSensor(breakout.CreateAnalogInput(GT.Socket.Pin.Three), mqtt);
-            ts.publish();
+            GT.Timer timer2 = new GT.Timer(20000);
+            timer2.Tick += (s) => ts.publish();
+            timer2.Start();
             // Use Debug.Print to show messages in Visual Studio's "Output" window during debugging.
             Debug.Print("Program Started");
 

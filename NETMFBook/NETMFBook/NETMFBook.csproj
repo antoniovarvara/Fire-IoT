@@ -57,6 +57,7 @@
     <Compile Include="Sensors\Sensor.cs" />
     <Compile Include="Sensors\TemperatureSensor.cs" />
     <Compile Include="StatusLed.cs" />
+    <Compile Include="TimeSync.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Gadgeteer" />
@@ -102,6 +103,7 @@
     <Reference Include="Microsoft.SPOT.Hardware" />
     <Reference Include="Microsoft.SPOT.Native" />
     <Reference Include="Microsoft.SPOT.Net" />
+    <Reference Include="Microsoft.SPOT.Time" />
     <Reference Include="Microsoft.SPOT.TinyCore" />
     <Reference Include="mscorlib" />
     <Reference Include="System" />

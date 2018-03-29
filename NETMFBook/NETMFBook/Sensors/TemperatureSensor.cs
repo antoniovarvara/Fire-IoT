@@ -21,7 +21,7 @@ namespace NETMFBook.Sensors
             return value * 100; //0.01V per grado;
         }
         public TemperatureSensor(Gadgeteer.SocketInterfaces.AnalogInput input, Mqtt mqtt):base(input, mqtt){
-            this.name = this.GetType().FullName;
+            this.name = this.GetType().Name;
         }
     }
 }

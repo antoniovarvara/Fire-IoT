@@ -6,14 +6,15 @@ namespace NETMFBook.Sensors
 {
     class Measure
     {
-        private double value;
-        private SensStatus status;
-        private string name;
-        private DateTime timestamp = DateTime.Now;
+        public double Value { get; set; }
+        public SensStatus Status { get; set; }
+        public String Name { get; set; }
+        public DateTime Timestamp { get; set; }
         public Measure(String name, SensStatus status, double value) {
-            this.name = name;
-            this.status = status;
-            this.value = value;
+            this.Name = name;
+            this.Status = status;
+            this.Value = value;
+            this.Timestamp = DateTime.Now;
         }
         public Measure() {}
         public static string Json(Measure measure)
@@ -24,8 +25,8 @@ namespace NETMFBook.Sensors
     }
     public enum SensStatus
 	{
-	    OK,
-        FAIL,
-        OUTOFRANGE,
+	    OK=0,
+        FAIL=1,
+        OUTOFRANGE=2,
 	}
 }
