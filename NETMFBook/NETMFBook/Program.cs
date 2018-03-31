@@ -46,15 +46,24 @@ namespace NETMFBook
             mqtt.Publish("status", "ciao");
             mqtt.Subscribe("led");
             mqtt.PublishEvent += mqtt_PublishEvent;
-            TemperatureSensor ts = new TemperatureSensor(breakout.CreateAnalogInput(GT.Socket.Pin.Three), mqtt);
-            GT.Timer timer2 = new GT.Timer(20000);
-            timer2.Tick += (s) => ts.publish();
-            timer2.Start();
+            SmokeSensor smoke = new SmokeSensor(breakout.CreateAnalogInput(GT.Socket.Pin.Four), mqtt,"smoke");
+            COSensor co = new COSensor(breakout.CreateAnalogInput(GT.Socket.Pin.Five), mqtt, "co");
+            FlameSensor flame = new FlameSensor(breakout.CreateAnalogInput(GT.Socket.Pin.Three), mqtt, "flame");
+            //TemperatureSensor temperature=new TemperatureSensor(breakout.CreateAnalogInput(GT.Socket.Pin.Three),mqtt,"temperature");
+            pubTimer(smoke,3000);
+            Thread.Sleep(500);
+            pubTimer(co,3000);
+            Thread.Sleep(500);
+            pubTimer(flame,3000);
             // Use Debug.Print to show messages in Visual Studio's "Output" window during debugging.
             Debug.Print("Program Started");
 
         }
-
+        private void pubTimer(Sensor sens,int time=20000) {
+            GT.Timer timer = new GT.Timer(time);
+            timer.Tick += (s) => sens.publish();
+            timer.Start();
+        }
         void mqtt_PublishEvent(object sender, uPLibrary.Networking.M2Mqtt.Messages.MqttMsgPublishEventArgs e)
         {
             if (e.Topic == "led")

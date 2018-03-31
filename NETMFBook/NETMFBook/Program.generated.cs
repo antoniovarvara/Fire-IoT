@@ -30,6 +30,9 @@ namespace NETMFBook {
         /// <summary>The LED Strip module using socket 8 of the mainboard.</summary>
         private Gadgeteer.Modules.GHIElectronics.LEDStrip ledStrip;
         
+        /// <summary>The SD Card module using socket 5 of the mainboard.</summary>
+        private Gadgeteer.Modules.GHIElectronics.SDCard sdCard;
+        
         /// <summary>This property provides access to the Mainboard API. This is normally not necessary for an end user program.</summary>
         protected new static GHIElectronics.Gadgeteer.FEZSpiderII Mainboard {
             get {
@@ -57,6 +60,7 @@ namespace NETMFBook {
             this.breakout = new GTM.GHIElectronics.Breakout(9);
             this.displayTE35 = new GTM.GHIElectronics.DisplayTE35(14, 13, 12, 10);
             this.ledStrip = new GTM.GHIElectronics.LEDStrip(8);
+            this.sdCard = new GTM.GHIElectronics.SDCard(5);
         }
     }
 }

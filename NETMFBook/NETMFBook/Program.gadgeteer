@@ -151,6 +151,21 @@
         </socketUses>
       </module>
     </gadgeteerModelHasGadgeteerHardware>
+    <gadgeteerModelHasGadgeteerHardware Id="72464d7b-94a4-4893-9b42-ee7f344c2d0f">
+      <module Id="bf67accd-c1b6-43ff-9868-25a4b7f7e888" cachedDefinition="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-16&quot;?&gt;&#xD;&#xA;&lt;ModuleDefinition xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot; Name=&quot;SD Card&quot; Manufacturer=&quot;GHI Electronics&quot; Description=&quot;A SDCard module&quot; Type=&quot;Gadgeteer.Modules.GHIElectronics.SDCard&quot; HardwareVersion=&quot;1.4&quot; Image=&quot;C:\Program Files (x86)\GHI Electronics\.NET Gadgeteer SDK\Modules\SDCard\Image.jpg&quot; BoardWidth=&quot;47&quot; BoardHeight=&quot;42&quot; MinimumGadgeteerCoreVersion=&quot;2.43.800&quot; HelpUrl=&quot;http://www.ghielectronics.com/catalog/product/271&quot; UniqueId=&quot;de3c7522-7331-40d5-bea7-9143e1a66430&quot; InstanceName=&quot;sdCard&quot; ModuleSuppliesPower=&quot;false&quot;&gt;&#xD;&#xA;  &lt;Power&gt;&#xD;&#xA;    &lt;PowerRequirements Voltage=&quot;3.3&quot;&gt;&#xD;&#xA;      &lt;TypicalCurrent&gt;0.001&lt;/TypicalCurrent&gt;&#xD;&#xA;      &lt;MaximumCurrent&gt;0.003&lt;/MaximumCurrent&gt;&#xD;&#xA;    &lt;/PowerRequirements&gt;&#xD;&#xA;    &lt;PowerRequirements Voltage=&quot;5&quot;&gt;&#xD;&#xA;      &lt;TypicalCurrent&gt;0&lt;/TypicalCurrent&gt;&#xD;&#xA;      &lt;MaximumCurrent&gt;0&lt;/MaximumCurrent&gt;&#xD;&#xA;    &lt;/PowerRequirements&gt;&#xD;&#xA;  &lt;/Power&gt;&#xD;&#xA;  &lt;ProvidedSockets /&gt;&#xD;&#xA;  &lt;Assemblies&gt;&#xD;&#xA;    &lt;Assembly MFVersion=&quot;4.2&quot; Name=&quot;GTM.GHIElectronics.SDCard&quot; /&gt;&#xD;&#xA;    &lt;Assembly MFVersion=&quot;4.3&quot; Name=&quot;GTM.GHIElectronics.SDCard&quot; /&gt;&#xD;&#xA;  &lt;/Assemblies&gt;&#xD;&#xA;  &lt;LibrariesProvided /&gt;&#xD;&#xA;  &lt;Sockets&gt;&#xD;&#xA;    &lt;Socket Orientation=&quot;90&quot; Left=&quot;23.88&quot; Top=&quot;38.27&quot; TypesLabel=&quot;F&quot; ConstructorOrder=&quot;1&quot; Optional=&quot;false&quot;&gt;&#xD;&#xA;      &lt;Types&gt;&#xD;&#xA;        &lt;Type&gt;F&lt;/Type&gt;&#xD;&#xA;      &lt;/Types&gt;&#xD;&#xA;      &lt;Pins&gt;&#xD;&#xA;        &lt;Pin Shared=&quot;false&quot;&gt;3&lt;/Pin&gt;&#xD;&#xA;        &lt;Pin Shared=&quot;false&quot;&gt;4&lt;/Pin&gt;&#xD;&#xA;        &lt;Pin Shared=&quot;false&quot;&gt;5&lt;/Pin&gt;&#xD;&#xA;        &lt;Pin Shared=&quot;false&quot;&gt;6&lt;/Pin&gt;&#xD;&#xA;        &lt;Pin Shared=&quot;false&quot;&gt;7&lt;/Pin&gt;&#xD;&#xA;        &lt;Pin Shared=&quot;false&quot;&gt;8&lt;/Pin&gt;&#xD;&#xA;        &lt;Pin Shared=&quot;false&quot;&gt;9&lt;/Pin&gt;&#xD;&#xA;      &lt;/Pins&gt;&#xD;&#xA;    &lt;/Socket&gt;&#xD;&#xA;  &lt;/Sockets&gt;&#xD;&#xA;  &lt;ExtraLibrariesRequired /&gt;&#xD;&#xA;&lt;/ModuleDefinition&gt;" name="sdCard" moduleType="Gadgeteer.Modules.GHIElectronics.SDCard" moduleDefinitionId="de3c7522-7331-40d5-bea7-9143e1a66430">
+        <socketUses>
+          <moduleHasSocketUses Id="ad17ef6e-8e81-4e40-9687-aa75962bb174">
+            <socketUse Id="4177c967-2c05-411a-a6f2-d4e07a22ae6f" label="F">
+              <socket>
+                <socketUseReferencesSocket Id="825adde4-ec94-4d5c-8db1-775bb4624f31">
+                  <socketMoniker Id="0002e7d2-bf3b-4d4c-90a3-df5b590bdf94" />
+                </socketUseReferencesSocket>
+              </socket>
+            </socketUse>
+          </moduleHasSocketUses>
+        </socketUses>
+      </module>
+    </gadgeteerModelHasGadgeteerHardware>
   </gadgeteerHardware>
   <comments>
     <gadgeteerModelHasComments Id="cd16c527-5431-4f97-be85-594a7f3370cc">

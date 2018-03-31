@@ -55,6 +55,9 @@
     </Compile>
     <Compile Include="Sensors\Measure.cs" />
     <Compile Include="Sensors\Sensor.cs" />
+    <Compile Include="Sensors\COSensor.cs" />
+    <Compile Include="Sensors\FlameSensor.cs" />
+    <Compile Include="Sensors\SmokeSensor.cs" />
     <Compile Include="Sensors\TemperatureSensor.cs" />
     <Compile Include="StatusLed.cs" />
     <Compile Include="TimeSync.cs" />
@@ -86,6 +89,9 @@
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="GTM.GHIElectronics.LEDStrip, Version=4.3.8.1, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="GTM.GHIElectronics.SDCard, Version=4.3.8.1, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="GTM.GHIElectronics.USBClientDP, Version=4.3.8.1, Culture=neutral, processorArchitecture=MSIL">

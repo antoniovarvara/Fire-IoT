@@ -20,8 +20,9 @@ namespace NETMFBook.Sensors
         public override double convert(double value) {
             return value * 100; //0.01V per grado;
         }
-        public TemperatureSensor(Gadgeteer.SocketInterfaces.AnalogInput input, Mqtt mqtt):base(input, mqtt){
-            this.name = this.GetType().Name;
+        public TemperatureSensor(Gadgeteer.SocketInterfaces.AnalogInput input, Mqtt mqtt, String name=null):base(input, mqtt)
+        {
+            this.name = name==null?this.GetType().Name:name;
         }
     }
 }

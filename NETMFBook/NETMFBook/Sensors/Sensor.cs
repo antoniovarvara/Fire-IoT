@@ -17,7 +17,7 @@ namespace NETMFBook.Sensors
         }
         public double read()
         {
-            return this.value = this.convert(input.ReadVoltage());   
+            return this.value = this.convert(input.ReadVoltage());
         }
         public abstract double convert(double value);
         public abstract SensStatus checkValidity(double value);
