@@ -6,7 +6,7 @@ namespace NETMFBook.Sensors
     class AlarmMessage
     {
         public bool Alarm { get; set; }
-        public AlarmMessage();
+        public AlarmMessage() { }
         public AlarmMessage(bool alarm) {
             this.Alarm = alarm;
         }
