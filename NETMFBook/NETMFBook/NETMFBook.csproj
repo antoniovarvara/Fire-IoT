@@ -53,6 +53,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Sensors\AlarmMessage.cs" />
+    <Compile Include="Sensors\Buzzer.cs" />
     <Compile Include="Sensors\Measure.cs" />
     <Compile Include="Sensors\Sensor.cs" />
     <Compile Include="Sensors\COSensor.cs" />
