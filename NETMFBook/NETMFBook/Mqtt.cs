@@ -17,35 +17,39 @@ namespace NETMFBook
             client = new MqttClient(EndPoint);
             client.ConnectionClosed += client_ConnectionClosed;
             client.MqttMsgPublishReceived += client_MqttMsgPublishReceived;
+            DisplayLCD.addMqttInfo(false);
             connectInfinite();
         }
         public void connectInfinite() {
-            lock (this)
-            {
-                if (client.IsConnected == false)
+                lock (client)
                 {
-                    do
+                    if (client.IsConnected == false)
                     {
-                        try
+                        do
                         {
-                            connect();
-                        }
-                        catch (Exception)
-                        {
-                            Thread.Sleep(1000);
-                            continue;
-                        }
-                    } while (false);
+                            try
+                            {
+                                connect();
+                            }
+                            catch (Exception)
+                            {
+                                Thread.Sleep(1000);
+                                Debug.Print("MQTT Connection FAILED");
+                                continue;
+                            }
+                        } while (false);
+                    }
                 }
-            }
         }
         private void connect() {
             client.Connect("fez", "utente", "fezspiderII");
             StatusLed.led.SetLed(3, true);
+            DisplayLCD.addMqttInfo(true);
         }
 
         void client_ConnectionClosed(object sender, EventArgs e)
         {
+            DisplayLCD.addMqttInfo(false);
             StatusLed.led.SetLed(3, false);
             connectInfinite();
         }
@@ -76,7 +80,8 @@ namespace NETMFBook
                 return client.Publish(Topic, Encoding.UTF8.GetBytes(Message), MqttMsgBase.QOS_LEVEL_AT_MOST_ONCE, true);
             }
             catch(Exception e) {
-                Debug.Print(e.StackTrace);
+                //Debug.Print(e.StackTrace);
+                Debug.Print("MQTT Pubish FAILED");
                 return 0;
             }
         }

@@ -61,6 +61,7 @@
     <Compile Include="Sensors\FlameSensor.cs" />
     <Compile Include="Sensors\SmokeSensor.cs" />
     <Compile Include="Sensors\TemperatureSensor.cs" />
+    <Compile Include="Display.cs" />
     <Compile Include="StatusLed.cs" />
     <Compile Include="TimeSync.cs" />
   </ItemGroup>

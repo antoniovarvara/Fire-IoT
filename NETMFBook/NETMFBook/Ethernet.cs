@@ -24,39 +24,39 @@ namespace NETMFBook
 
         public Ethernet(EthernetJ11D ethernetJ11D) {
             this.ethernetJ11D = ethernetJ11D;
-            t = new Thread(() => {
-                try
-                {
+            try
+            {
 
-                    //ethernetJ11D.NetworkSettings.PhysicalAddress=new byte[]{0x00,0x21,0x03,0x80,0x8B,0x6B};
-                    if (!ethernetJ11D.NetworkInterface.Opened)
-                    {
-                        ethernetJ11D.NetworkInterface.Open();
-                    }
-                    ethernetJ11D.NetworkDown += ethernetJ11D_NetworkDown;
-                    ethernetJ11D.UseThisNetworkInterface();
-                    ethernetJ11D.UseStaticIP("192.168.3.99", "255.255.255.0", "192.168.3.235");
-                    while (ethernetJ11D.NetworkInterface.IPAddress.Equals("0.0.0.0"))
-                    {
-                        Debug.Print("Waiting for Network!");
-                        Thread.Sleep(1000);
-                    }
-                    Debug.Print("Connected IP:" + ethernetJ11D.NetworkInterface.IPAddress);
-                    PrintNetworkState();
-                    StatusLed.led.SetLed(2, true);
-                    Thread.Sleep(2000);
-                    lock (this)
-                    {
-                        mqtt = new Mqtt();
-                        waitHandle.Set();
-                    }
-                    ethernetJ11D.NetworkUp += ethernetJ11D_NetworkUp;
+                //ethernetJ11D.NetworkSettings.PhysicalAddress=new byte[]{0x00,0x21,0x03,0x80,0x8B,0x6B};
+                if (!ethernetJ11D.NetworkInterface.Opened)
+                {
+                    ethernetJ11D.NetworkInterface.Open();
                 }
-                catch (Exception e) {
-                    Debug.Print(e.StackTrace);
+                ethernetJ11D.NetworkDown += ethernetJ11D_NetworkDown;
+                ethernetJ11D.UseThisNetworkInterface();
+                ethernetJ11D.NetworkSettings.EnableDhcp();
+                ethernetJ11D.UseDHCP();
+                //ethernetJ11D.UseStaticIP("192.168.3.99", "255.255.255.0", "192.168.3.235");
+                while (ethernetJ11D.NetworkInterface.IPAddress.Equals("0.0.0.0"))
+                {
+                    Debug.Print("Waiting for Network!");
+                    Thread.Sleep(1000);
+                    ethernetJ11D.UseDHCP();
                 }
-            });
-            t.Start();
+                Debug.Print("Connected IP:" + ethernetJ11D.NetworkInterface.IPAddress);
+                PrintNetworkState();
+                StatusLed.led.SetLed(2, true);
+                Thread.Sleep(2000);
+                lock (this)
+                {
+                    mqtt = new Mqtt();
+                    waitHandle.Set();
+                }
+                ethernetJ11D.NetworkUp += ethernetJ11D_NetworkUp;
+            }
+            catch (Exception e) {
+                Debug.Print(e.StackTrace);
+            }
         }
 
         void ethernetJ11D_NetworkUp(Gadgeteer.Modules.Module.NetworkModule sender, Gadgeteer.Modules.Module.NetworkModule.NetworkState state)
@@ -72,6 +72,15 @@ namespace NETMFBook
             StatusLed.led.SetLed(1, false);
             Debug.Print("Network DOWN!");
             PrintNetworkState();
+            new Thread(() =>
+            {
+                while (ethernetJ11D.NetworkInterface.IPAddress.Equals("0.0.0.0"))
+                {
+                    Debug.Print("Waiting for Network!");
+                    Thread.Sleep(1000);
+                    ethernetJ11D.UseDHCP();
+                }
+            }).Start();
 
         }
         private void PrintNetworkState()
@@ -92,6 +101,10 @@ namespace NETMFBook
 	        builder.Append("GW=");
 	        builder.Append(ethernetJ11D.NetworkInterface.GatewayAddress);
 	        Debug.Print(builder.ToString());
+            DisplayLCD.addNetInfo(
+                ethernetJ11D.NetworkInterface.IPAddress,
+                ethernetJ11D.NetworkInterface.SubnetMask,
+                ethernetJ11D.NetworkInterface.GatewayAddress);
         }
     }
 

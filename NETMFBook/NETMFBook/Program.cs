@@ -35,37 +35,54 @@ namespace NETMFBook
                 timer.Tick +=<tab><tab>
                 timer.Start();
             *******************************************************************************************/
+            
+            // Use Debug.Print to show messages in Visual Studio's "Output" window during debugging.
             GT.Timer timer = new GT.Timer(2000);
             timer.Tick += timer_Tick;
             timer.Start();
+            new Thread(() => init()).Start();
+            Debug.Print("Program Started");
+
+        }
+
+        private void init()
+        {
             StatusLed.led = ledStrip;
             StatusLed.led.SetLed(0, true);
+            DisplayLCD.lcd = displayTE35;
+            DisplayTimer(1000);
             Ethernet eth = new Ethernet(ethernetJ11D);
             Mqtt mqtt = eth.MQTT;
             TimeSync.update();
             mqtt.Publish("status", "ciao");
             mqtt.Subscribe("led");
             mqtt.PublishEvent += mqtt_PublishEvent;
-            SmokeSensor smoke = new SmokeSensor(breakout.CreateAnalogInput(GT.Socket.Pin.Four), mqtt,"smoke");
+            SmokeSensor smoke = new SmokeSensor(breakout.CreateAnalogInput(GT.Socket.Pin.Four), mqtt, "smoke");
             COSensor co = new COSensor(breakout.CreateAnalogInput(GT.Socket.Pin.Five), mqtt, "co");
             FlameSensor flame = new FlameSensor(breakout.CreateAnalogInput(GT.Socket.Pin.Three), mqtt, "flame");
             //TemperatureSensor temperature=new TemperatureSensor(breakout.CreateAnalogInput(GT.Socket.Pin.Three),mqtt,"temperature");
-            Buzzer b = new Buzzer(breakout2.CreateDigitalOutput(GT.Socket.Pin.Four, true), mqtt,"incendio");
+            Buzzer b = new Buzzer(breakout2.CreateDigitalOutput(GT.Socket.Pin.Four, true), mqtt, "incendio");
             b.subscribe();
-            pubTimer(smoke,3000);
+            pubTimer(smoke, 3000);
             Thread.Sleep(500);
-            pubTimer(co,3000);
+            pubTimer(co, 3000);
             Thread.Sleep(500);
-            pubTimer(flame,3000);
-            // Use Debug.Print to show messages in Visual Studio's "Output" window during debugging.
-            Debug.Print("Program Started");
-
+            pubTimer(flame, 3000);
         }
+
         private void pubTimer(Sensor sens,int time=20000) {
             GT.Timer timer = new GT.Timer(time);
             timer.Tick += (s) => sens.publish();
             timer.Start();
         }
+
+        private void DisplayTimer(int time = 2000)
+        {
+            GT.Timer timer = new GT.Timer(time);
+            timer.Tick += (s) => DisplayLCD.Refresh();
+            timer.Start();
+        }
+
         void mqtt_PublishEvent(object sender, uPLibrary.Networking.M2Mqtt.Messages.MqttMsgPublishEventArgs e)
         {
             if (e.Topic == "led")

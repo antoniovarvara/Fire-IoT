@@ -2,12 +2,15 @@ using System;
 using Microsoft.SPOT;
 using GT = Gadgeteer;
 
+using System.Threading;
+
 namespace NETMFBook.Sensors
 {
     public abstract class Sensor
     {
         private GT.SocketInterfaces.AnalogInput input;
-        private double value;
+        private int repetition;
+        private double value, lastValue = -1;
         private Guid id=new Guid();
         private Mqtt mqtt;
         protected string name;
@@ -23,7 +26,19 @@ namespace NETMFBook.Sensors
         public abstract SensStatus checkValidity(double value);
         public void publish()
         {
-            mqtt.Publish(this.name,Measure.Json(new Measure(this.name,checkValidity(this.read()),this.value)));
+            if (lastValue == -1 || lastValue != value || repetition > 14)
+            {
+                repetition = 0;
+                new Thread(() =>
+                {
+                    mqtt.Publish(this.name, Measure.Json(new Measure(this.name, checkValidity(this.read()), this.value)));
+                });
+                lastValue = this.value;
+            }
+            else
+            {
+                repetition++;
+            }
         }
     }
 }
