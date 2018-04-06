@@ -26,17 +26,22 @@ namespace NETMFBook.Sensors
         public abstract SensStatus checkValidity(double value);
         public void publish()
         {
-            if (lastValue == -1 || lastValue != value || repetition > 14)
+            double reading = 0;
+            if (lastValue == -1 || lastValue != value || repetition > 10)
             {
                 repetition = 0;
                 new Thread(() =>
                 {
-                    mqtt.Publish(this.name, Measure.Json(new Measure(this.name, checkValidity(this.read()), this.value)));
-                });
+                    reading = this.read();
+                    mqtt.Publish(this.name, Measure.Json(new Measure(this.name, checkValidity(reading), reading)));
+                    DisplayLCD.addMeasure(this, reading);
+                    Debug.Print("Published name: "+ this.name+ " status: " + checkValidity(reading) + " value: " + reading);
+                }).Start();
                 lastValue = this.value;
             }
             else
             {
+                //Debug.Print("Not published "+ this.name + ", last value: "+lastValue+" read: "+reading+" repetition: "+repetition);
                 repetition++;
             }
         }

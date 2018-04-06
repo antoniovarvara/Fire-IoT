@@ -5,6 +5,7 @@ using System.Text;
 using System.Net;
 using uPLibrary.Networking.M2Mqtt.Messages;
 using System.Threading;
+using NETMFBook.Database;
 
 namespace NETMFBook
 {
@@ -75,13 +76,29 @@ namespace NETMFBook
             {
                 if (client.IsConnected == false)
                 {
-                    this.connectInfinite();
+                    //this.connectInfinite();
+                    MeasureDB.addMeasure(Topic, Message);
+                    return 0;
+                }
+                while (client.IsConnected == true && MeasureDB.hasPendingMeasure(Topic)){
+                    String pendingMessage = MeasureDB.firstPendingMeasure(Topic);
+                    try
+                    {
+                        client.Publish(Topic, Encoding.UTF8.GetBytes(pendingMessage), MqttMsgBase.QOS_LEVEL_AT_MOST_ONCE, true);
+                    }
+                    catch (Exception)
+                    {
+                        Debug.Print("MQTT Publish pending FAILED");
+                        MeasureDB.addMeasure(Topic, pendingMessage);
+                        MeasureDB.addMeasure(Topic, Message);
+                        return 0;
+                    }
                 }
                 return client.Publish(Topic, Encoding.UTF8.GetBytes(Message), MqttMsgBase.QOS_LEVEL_AT_MOST_ONCE, true);
             }
             catch(Exception e) {
                 //Debug.Print(e.StackTrace);
-                Debug.Print("MQTT Pubish FAILED");
+                Debug.Print("MQTT Publish FAILED");
                 return 0;
             }
         }

@@ -10,7 +10,6 @@ namespace NETMFBook
     {
         private AutoResetEvent waitHandle = new AutoResetEvent(false);
         private EthernetJ11D ethernetJ11D;
-        private Thread t;
         private Mqtt mqtt=null;
         public Mqtt MQTT { get{
             while (mqtt == null) {
@@ -32,26 +31,26 @@ namespace NETMFBook
                 {
                     ethernetJ11D.NetworkInterface.Open();
                 }
-                ethernetJ11D.NetworkDown += ethernetJ11D_NetworkDown;
+                PrintNetworkState();
                 ethernetJ11D.UseThisNetworkInterface();
                 ethernetJ11D.NetworkSettings.EnableDhcp();
-                ethernetJ11D.UseDHCP();
+                ethernetJ11D.NetworkSettings.EnableDynamicDns();
+                //ethernetJ11D.UseDHCP();
                 //ethernetJ11D.UseStaticIP("192.168.3.99", "255.255.255.0", "192.168.3.235");
                 while (ethernetJ11D.NetworkInterface.IPAddress.Equals("0.0.0.0"))
                 {
                     Debug.Print("Waiting for Network!");
                     Thread.Sleep(1000);
-                    ethernetJ11D.UseDHCP();
                 }
                 Debug.Print("Connected IP:" + ethernetJ11D.NetworkInterface.IPAddress);
                 PrintNetworkState();
-                StatusLed.led.SetLed(2, true);
-                Thread.Sleep(2000);
                 lock (this)
                 {
                     mqtt = new Mqtt();
                     waitHandle.Set();
                 }
+                Microsoft.SPOT.Net.NetworkInformation.NetworkChange.NetworkAvailabilityChanged += (s, e) => ethernetJ11D_CableChange(s, e);
+                ethernetJ11D.NetworkDown += ethernetJ11D_NetworkDown;
                 ethernetJ11D.NetworkUp += ethernetJ11D_NetworkUp;
             }
             catch (Exception e) {
@@ -59,9 +58,37 @@ namespace NETMFBook
             }
         }
 
+        private void ethernetJ11D_CableChange(object s, Microsoft.SPOT.Net.NetworkInformation.NetworkAvailabilityEventArgs e)
+        {
+            if (e.IsAvailable)
+            {
+                Debug.Print("Network cable connected.");
+                StatusLed.led.SetLed(1, true);
+                //PrintNetworkState();
+                //mqtt.connectInfinite();
+            }
+            else
+            {
+                Debug.Print("Network cable disconnected.");
+                StatusLed.led.SetLed(1, false);
+                PrintNetworkState();
+                /*new Thread(() =>
+                {
+                    while (ethernetJ11D.NetworkInterface.IPAddress.Equals("0.0.0.0"))
+                    {
+                        Debug.Print("Waiting for Network!");
+                        Thread.Sleep(2000);
+                        //ethernetJ11D.UseDHCP();
+                    }
+                    PrintNetworkState();
+                }).Start();*/
+            }
+        }
+
         void ethernetJ11D_NetworkUp(Gadgeteer.Modules.Module.NetworkModule sender, Gadgeteer.Modules.Module.NetworkModule.NetworkState state)
         {
             StatusLed.led.SetLed(1, true);
+            StatusLed.led.SetLed(2, true);
             Debug.Print("Network UP!");
             PrintNetworkState();
             mqtt.connectInfinite();
@@ -70,9 +97,10 @@ namespace NETMFBook
         void ethernetJ11D_NetworkDown(Gadgeteer.Modules.Module.NetworkModule sender, Gadgeteer.Modules.Module.NetworkModule.NetworkState state)
         {
             StatusLed.led.SetLed(1, false);
+            StatusLed.led.SetLed(2, false);
             Debug.Print("Network DOWN!");
             PrintNetworkState();
-            new Thread(() =>
+            /*new Thread(() =>
             {
                 while (ethernetJ11D.NetworkInterface.IPAddress.Equals("0.0.0.0"))
                 {
@@ -80,7 +108,7 @@ namespace NETMFBook
                     Thread.Sleep(1000);
                     ethernetJ11D.UseDHCP();
                 }
-            }).Start();
+            }).Start();*/
 
         }
         private void PrintNetworkState()
@@ -102,6 +130,7 @@ namespace NETMFBook
 	        builder.Append(ethernetJ11D.NetworkInterface.GatewayAddress);
 	        Debug.Print(builder.ToString());
             DisplayLCD.addNetInfo(
+                ethernetJ11D.IsNetworkConnected,
                 ethernetJ11D.NetworkInterface.IPAddress,
                 ethernetJ11D.NetworkInterface.SubnetMask,
                 ethernetJ11D.NetworkInterface.GatewayAddress);

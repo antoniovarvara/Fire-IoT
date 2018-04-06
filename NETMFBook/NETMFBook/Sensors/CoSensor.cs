@@ -6,7 +6,7 @@ namespace NETMFBook.Sensors
     class COSensor:Sensor
     {
         public override SensStatus checkValidity(double value){
-            if(value == 0 && value>1022)
+            if(value == 0 || value>1022)
             {
                 return SensStatus.FAIL;
             }

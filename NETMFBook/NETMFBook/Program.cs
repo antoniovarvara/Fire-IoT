@@ -12,6 +12,7 @@ using Gadgeteer.Networking;
 using GT = Gadgeteer;
 using GTM = Gadgeteer.Modules;
 using Gadgeteer.Modules.GHIElectronics;
+using GHI.Networking;
 using System.Text;
 using NETMFBook.Sensors;
 
@@ -23,20 +24,6 @@ namespace NETMFBook
         // This method is run when the mainboard is powered up or reset.   
         void ProgramStarted()
         {
-            /*******************************************************************************************
-            Modules added in the Program.gadgeteer designer view are used by typing 
-            their name followed by a period, e.g.  button.  or  camera.
-            
-            Many modules generate useful events. Type +=<tab><tab> to add a handler to an event, e.g.:
-                button.ButtonPressed +=<tab><tab>
-            
-            If you want to do something periodically, use a GT.Timer and handle its Tick event, e.g.:
-                GT.Timer timer = new GT.Timer(1000); // every second (1000ms)
-                timer.Tick +=<tab><tab>
-                timer.Start();
-            *******************************************************************************************/
-            
-            // Use Debug.Print to show messages in Visual Studio's "Output" window during debugging.
             GT.Timer timer = new GT.Timer(2000);
             timer.Tick += timer_Tick;
             timer.Start();
@@ -50,7 +37,7 @@ namespace NETMFBook
             StatusLed.led = ledStrip;
             StatusLed.led.SetLed(0, true);
             DisplayLCD.lcd = displayTE35;
-            DisplayTimer(1000);
+            DisplayTimer();
             Ethernet eth = new Ethernet(ethernetJ11D);
             Mqtt mqtt = eth.MQTT;
             TimeSync.update();
@@ -76,7 +63,7 @@ namespace NETMFBook
             timer.Start();
         }
 
-        private void DisplayTimer(int time = 2000)
+        private void DisplayTimer(int time = 1000)
         {
             GT.Timer timer = new GT.Timer(time);
             timer.Tick += (s) => DisplayLCD.Refresh();
