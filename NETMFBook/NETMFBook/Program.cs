@@ -15,6 +15,7 @@ using Gadgeteer.Modules.GHIElectronics;
 using GHI.Networking;
 using System.Text;
 using NETMFBook.Sensors;
+using NETMFBook.Database;
 
 namespace NETMFBook
 {
@@ -37,9 +38,17 @@ namespace NETMFBook
             StatusLed.led = ledStrip;
             StatusLed.led.SetLed(0, true);
             DisplayLCD.lcd = displayTE35;
-            DisplayTimer();
+            DisplayTimer(); 
+            while (!sdCard.IsCardInserted || !sdCard.IsCardMounted)
+            {
+                DisplayLCD.addSDInfo(false);
+                Thread.Sleep(1000);
+                sdCard.Mount();
+            }
+            DisplayLCD.addSDInfo(true);
             Ethernet eth = new Ethernet(ethernetJ11D);
             Mqtt mqtt = eth.MQTT;
+            MeasureDB.sd = sdCard;
             TimeSync.update();
             mqtt.Publish("status", "ciao");
             mqtt.Subscribe("led");
@@ -60,6 +69,7 @@ namespace NETMFBook
         private void pubTimer(Sensor sens,int time=20000) {
             GT.Timer timer = new GT.Timer(time);
             timer.Tick += (s) => sens.publish();
+            MeasureDB.mapTimers.Add(sens.name, timer);
             timer.Start();
         }
 

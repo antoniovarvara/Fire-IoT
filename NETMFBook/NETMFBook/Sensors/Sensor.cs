@@ -13,7 +13,7 @@ namespace NETMFBook.Sensors
         private double value, lastValue = -1;
         private Guid id=new Guid();
         private Mqtt mqtt;
-        protected string name;
+        public string name { get; protected set; }
         public Sensor(GT.SocketInterfaces.AnalogInput input, Mqtt mqtt) {
             this.mqtt = mqtt;
             this.input = input;
@@ -33,7 +33,7 @@ namespace NETMFBook.Sensors
                 new Thread(() =>
                 {
                     reading = this.read();
-                    mqtt.Publish(this.name, Measure.Json(new Measure(this.name, checkValidity(reading), reading)));
+                    mqtt.Publish(this.name, Measure.Json(new Measure("fez24", this.name, checkValidity(reading), reading)));
                     DisplayLCD.addMeasure(this, reading);
                     Debug.Print("Published name: "+ this.name+ " status: " + checkValidity(reading) + " value: " + reading);
                 }).Start();

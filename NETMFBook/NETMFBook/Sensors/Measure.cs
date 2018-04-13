@@ -8,9 +8,11 @@ namespace NETMFBook.Sensors
     {
         public double Value { get; set; }
         public SensStatus Status { get; set; }
+        public String Id { get; set; }
         public String Name { get; set; }
         public DateTime Timestamp { get; set; }
-        public Measure(String name, SensStatus status, double value) {
+        public Measure(String id, String name, SensStatus status, double value) {
+            this.Id = id;
             this.Name = name;
             this.Status = status;
             this.Value = value;

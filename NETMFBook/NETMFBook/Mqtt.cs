@@ -31,18 +31,20 @@ namespace NETMFBook
                             try
                             {
                                 connect();
+                                break;
                             }
                             catch (Exception)
                             {
                                 Thread.Sleep(1000);
                                 Debug.Print("MQTT Connection FAILED");
-                                continue;
+                                
                             }
-                        } while (false);
+                        } while (true);
                     }
                 }
         }
         private void connect() {
+
             client.Connect("fez", "utente", "fezspiderII");
             StatusLed.led.SetLed(3, true);
             DisplayLCD.addMqttInfo(true);

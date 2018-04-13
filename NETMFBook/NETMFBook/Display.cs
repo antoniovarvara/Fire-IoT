@@ -24,7 +24,7 @@ namespace NETMFBook
         private static int startX = 15;
         private static int startY = 10;
         private static string ip = null, netmask = null, gateway = null;
-        private static int indexState = -1, indexIp = -1, indexNetmask = -1, indexGateway = -1, indexMqtt = -1;
+        private static int indexState = -1, indexIp = -1, indexNetmask = -1, indexGateway = -1, indexMqtt = -1, indexSD = -1;
         private static int indexFlame = -1, indexCO = -1, indexSmoke = -1;
         private static int flameValue = 0, coValue = 0, smokeValue = 0;
         private static bool stateNet = false, mqttConnected = false;
@@ -174,6 +174,19 @@ namespace NETMFBook
                 gateway = gatewayE;
                 if (indexGateway == -1) indexGateway = counter++;
                 log[indexGateway] = "Gateway: " + gateway;
+            }
+        }
+
+        public static void addSDInfo(bool state)
+        {
+            lock (log)
+            {
+                if (indexSD == -1)
+                {
+                    indexSD = counter++;
+                    counter++;
+                }
+                log[indexSD] = "SD Card Connected: " + state;
             }
         }
 
