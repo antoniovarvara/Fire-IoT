@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Threading;
+using System.IO;
 using Microsoft.SPOT;
+using Microsoft.SPOT.Hardware;
+using Microsoft.SPOT.IO;
 using Microsoft.SPOT.Presentation;
 using Microsoft.SPOT.Presentation.Controls;
 using Microsoft.SPOT.Presentation.Media;
@@ -22,35 +25,70 @@ namespace NETMFBook
     public partial class Program
     {
         private bool status;
+        private static AutoResetEvent mountEvent = new AutoResetEvent(false);
         // This method is run when the mainboard is powered up or reset.   
         void ProgramStarted()
         {
             GT.Timer timer = new GT.Timer(2000);
             timer.Tick += timer_Tick;
             timer.Start();
+            DisplayLCD.addSDInfo(false, 0);
             new Thread(() => init()).Start();
             Debug.Print("Program Started");
 
         }
-
+        
         private void init()
         {
             StatusLed.led = ledStrip;
             StatusLed.led.SetLed(0, true);
             DisplayLCD.lcd = displayTE35;
-            DisplayTimer(); 
-            while (!sdCard.IsCardInserted || !sdCard.IsCardMounted)
+            DisplayTimer();
+            RemovableMedia.Insert += (sender, e) => { mountEvent.Set(); Debug.Print("SD Mounted"); };
+            while(!sdCard.IsCardInserted)
             {
-                DisplayLCD.addSDInfo(false);
+                DisplayLCD.addSDInfo(false, 0);
                 Thread.Sleep(1000);
-                sdCard.Mount();
+                Debug.Print("Waiting for sd card");
             }
-            DisplayLCD.addSDInfo(true);
+           
+            while (!sdCard.IsCardMounted)
+            {
+                DisplayLCD.addSDInfo(false, 0);
+                Thread.Sleep(1000);
+                if(!sdCard.IsCardMounted)
+                    sdCard.Mount();
+            }
+            mountEvent.WaitOne();
+            //byte[] data = Encoding.UTF8.GetBytes("Hello World!");
+            //sdCard.StorageDevice.WriteFile("measure" + 0, data);
+            //sdCard.StorageDevice.CreateDirectory(@"test");
+            if (VolumeInfo.GetVolumes()[0].IsFormatted)
+            {
+                string rootDirectory =
+                    VolumeInfo.GetVolumes()[0].RootDirectory;
+                string[] files = Directory.GetFiles(rootDirectory);
+                string[] folders = Directory.GetDirectories(rootDirectory);
+
+                Debug.Print("Files available on " + rootDirectory + ":");
+                for (int i = 0; i < files.Length; i++)
+                {
+                    Debug.Print("Deleted " + files[i]);
+                    sdCard.StorageDevice.Delete(files[i]);
+                }
+                Debug.Print("Folders available on " + rootDirectory + ":" + folders.Length);
+            }
+            else
+            {
+                Debug.Print("Storage is not formatted. " +
+                    "Format on PC with FAT32/FAT16 first!");
+            }
+            DisplayLCD.addSDInfo(true,0);
             Ethernet eth = new Ethernet(ethernetJ11D);
             Mqtt mqtt = eth.MQTT;
             MeasureDB.sd = sdCard;
             TimeSync.update();
-            mqtt.Publish("status", "ciao");
+            //mqtt.Publish("status", "ciao");
             mqtt.Subscribe("led");
             mqtt.PublishEvent += mqtt_PublishEvent;
             SmokeSensor smoke = new SmokeSensor(breakout.CreateAnalogInput(GT.Socket.Pin.Four), mqtt, "smoke");

@@ -177,16 +177,15 @@ namespace NETMFBook
             }
         }
 
-        public static void addSDInfo(bool state)
+        public static void addSDInfo(bool state, int pendingMeasure)
         {
             lock (log)
             {
                 if (indexSD == -1)
                 {
                     indexSD = counter++;
-                    counter++;
                 }
-                log[indexSD] = "SD Card Connected: " + state;
+                log[indexSD] = "SD Card Connected: " + state + " -> Pending measures: " + pendingMeasure;
             }
         }
 

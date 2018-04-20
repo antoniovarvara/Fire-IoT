@@ -64,7 +64,7 @@ namespace NETMFBook
             {
                 Debug.Print("Network cable connected.");
                 StatusLed.led.SetLed(1, true);
-                //PrintNetworkState();
+                PrintNetworkState();
                 //mqtt.connectInfinite();
             }
             else

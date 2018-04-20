@@ -22,26 +22,27 @@ namespace NETMFBook
             connectInfinite();
         }
         public void connectInfinite() {
+            new Thread(() =>
+            {
                 lock (client)
                 {
-                    if (client.IsConnected == false)
+                    while (client.IsConnected == false)
                     {
-                        do
+                        try
                         {
-                            try
-                            {
-                                connect();
-                                break;
-                            }
-                            catch (Exception)
-                            {
-                                Thread.Sleep(1000);
-                                Debug.Print("MQTT Connection FAILED");
-                                
-                            }
-                        } while (true);
+                            connect();
+                            break;
+                        }
+                        catch (Exception)
+                        {
+                            Thread.Sleep(5000);
+                            Debug.Print("MQTT Connection FAILED");
+
+                        }
                     }
-                }
+                 }
+            }).Start();
+                
         }
         private void connect() {
 
@@ -54,7 +55,7 @@ namespace NETMFBook
         {
             DisplayLCD.addMqttInfo(false);
             StatusLed.led.SetLed(3, false);
-            connectInfinite();
+            //connectInfinite();
         }
 
         void client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
@@ -67,7 +68,7 @@ namespace NETMFBook
         public ushort Subscribe(String topic) {
             if (client.IsConnected == false)
             {
-                this.connectInfinite();
+                //this.connectInfinite();
             }
             return client.Subscribe(new String[]{topic}, new byte[] {MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE});
         }
@@ -79,6 +80,7 @@ namespace NETMFBook
                 if (client.IsConnected == false)
                 {
                     //this.connectInfinite();
+                    Debug.Print("MQTT Publish store in sd");
                     MeasureDB.addMeasure(Topic, Message);
                     return 0;
                 }
@@ -86,7 +88,9 @@ namespace NETMFBook
                     String pendingMessage = MeasureDB.firstPendingMeasure(Topic);
                     try
                     {
+                        Debug.Print("MQTT pending message publishing...");
                         client.Publish(Topic, Encoding.UTF8.GetBytes(pendingMessage), MqttMsgBase.QOS_LEVEL_AT_MOST_ONCE, true);
+                        Debug.Print("MQTT pending message published");
                     }
                     catch (Exception)
                     {
@@ -96,6 +100,7 @@ namespace NETMFBook
                         return 0;
                     }
                 }
+                Debug.Print("MQTT Publish"+Message);
                 return client.Publish(Topic, Encoding.UTF8.GetBytes(Message), MqttMsgBase.QOS_LEVEL_AT_MOST_ONCE, true);
             }
             catch(Exception e) {

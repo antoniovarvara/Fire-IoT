@@ -27,14 +27,14 @@ namespace NETMFBook.Sensors
         public void publish()
         {
             double reading = 0;
-            if (lastValue == -1 || lastValue != value || repetition > 10)
+            if (lastValue == -1 || lastValue != value || repetition > 1)
             {
                 repetition = 0;
                 new Thread(() =>
                 {
                     reading = this.read();
-                    mqtt.Publish(this.name, Measure.Json(new Measure("fez24", this.name, checkValidity(reading), reading)));
                     DisplayLCD.addMeasure(this, reading);
+                    mqtt.Publish(this.name, Measure.Json(new Measure("fez24", this.name, checkValidity(reading), reading)));
                     Debug.Print("Published name: "+ this.name+ " status: " + checkValidity(reading) + " value: " + reading);
                 }).Start();
                 lastValue = this.value;
