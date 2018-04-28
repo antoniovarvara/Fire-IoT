@@ -84,19 +84,16 @@ namespace NETMFBook
                     "Format on PC with FAT32/FAT16 first!");
             }
             DisplayLCD.addSDInfo(true,0);
+            Buzzer.init(breakout2.CreateDigitalOutput(GT.Socket.Pin.Four, false));
             Ethernet eth = new Ethernet(ethernetJ11D);
             Mqtt mqtt = eth.MQTT;
             MeasureDB.sd = sdCard;
             TimeSync.update();
             //mqtt.Publish("status", "ciao");
-            mqtt.Subscribe("led");
-            mqtt.PublishEvent += mqtt_PublishEvent;
             SmokeSensor smoke = new SmokeSensor(breakout.CreateAnalogInput(GT.Socket.Pin.Four), mqtt, "smoke");
             COSensor co = new COSensor(breakout.CreateAnalogInput(GT.Socket.Pin.Five), mqtt, "co");
             FlameSensor flame = new FlameSensor(breakout.CreateAnalogInput(GT.Socket.Pin.Three), mqtt, "flame");
-            //TemperatureSensor temperature=new TemperatureSensor(breakout.CreateAnalogInput(GT.Socket.Pin.Three),mqtt,"temperature");
-            Buzzer b = new Buzzer(breakout2.CreateDigitalOutput(GT.Socket.Pin.Four, true), mqtt, "incendio");
-            b.subscribe();
+            TemperatureSensor temperature=new TemperatureSensor(breakout3.CreateAnalogInput(GT.Socket.Pin.Three),mqtt,"temperature");
             pubTimer(smoke, 3000);
             Thread.Sleep(500);
             pubTimer(co, 3000);
@@ -118,20 +115,6 @@ namespace NETMFBook
             timer.Start();
         }
 
-        void mqtt_PublishEvent(object sender, uPLibrary.Networking.M2Mqtt.Messages.MqttMsgPublishEventArgs e)
-        {
-            if (e.Topic == "led")
-            {
-                /*
-                Application.Current.Dispatcher.Invoke(TimeSpan.Zero, (displayTE35obj) =>
-                {
-                    ((DisplayTE35)displayTE35obj).SimpleGraphics.DisplayText(new String(Encoding.UTF8.GetChars(e.Message)), Resources.GetFont(Resources.FontResources.NinaB), GT.Color.Blue, 10, 10);
-                    return 0;
-                }, displayTE35);
-            
-                 */
-           }
-        }
 
         void timer_Tick(GT.Timer timer)
         {

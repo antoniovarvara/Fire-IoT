@@ -125,13 +125,7 @@
             </socketUse>
           </moduleHasSocketUses>
           <moduleHasSocketUses Id="8048c192-6c1b-40d4-9e6b-72cae96c8318">
-            <socketUse Id="8d3219d5-9a4e-4385-84d7-23a912ede29e" label="T">
-              <socket>
-                <socketUseReferencesSocket Id="756ff668-3a86-47db-a706-eb81fb6d2e93">
-                  <socketMoniker Id="94141066-121e-4d50-938e-6056196796c2" />
-                </socketUseReferencesSocket>
-              </socket>
-            </socketUse>
+            <socketUse Id="8d3219d5-9a4e-4385-84d7-23a912ede29e" label="T" />
           </moduleHasSocketUses>
         </socketUses>
       </module>
@@ -174,6 +168,21 @@
               <socket>
                 <socketUseReferencesSocket Id="8daea005-d39d-419c-a5b0-e45cf7ee528c">
                   <socketMoniker Id="a0471caa-fead-4985-bedb-b0a8baa7442a" />
+                </socketUseReferencesSocket>
+              </socket>
+            </socketUse>
+          </moduleHasSocketUses>
+        </socketUses>
+      </module>
+    </gadgeteerModelHasGadgeteerHardware>
+    <gadgeteerModelHasGadgeteerHardware Id="8cdfd875-2dfb-40d0-b568-9b7cf0f97aaa">
+      <module Id="4ec55271-ba7a-48b7-a146-dcc5d3a79710" cachedDefinition="&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-16&quot;?&gt;&#xD;&#xA;&lt;ModuleDefinition xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot; Name=&quot;Breakout&quot; Manufacturer=&quot;GHI Electronics&quot; Description=&quot;A Breakout module&quot; Type=&quot;Gadgeteer.Modules.GHIElectronics.Breakout&quot; HardwareVersion=&quot;1.0&quot; Image=&quot;C:\Program Files (x86)\GHI Electronics\.NET Gadgeteer SDK\Modules\Breakout\Image.jpg&quot; BoardWidth=&quot;25&quot; BoardHeight=&quot;11&quot; MinimumGadgeteerCoreVersion=&quot;2.43.800&quot; HelpUrl=&quot;http://www.ghielectronics.com/catalog/product/405&quot; UniqueId=&quot;6dab6643-da15-4665-8c2d-97f7d1d5f9a8&quot; InstanceName=&quot;breakout&quot; ModuleSuppliesPower=&quot;false&quot;&gt;&#xD;&#xA;  &lt;Power&gt;&#xD;&#xA;    &lt;PowerRequirements Voltage=&quot;3.3&quot;&gt;&#xD;&#xA;      &lt;TypicalCurrent&gt;0&lt;/TypicalCurrent&gt;&#xD;&#xA;      &lt;MaximumCurrent&gt;0&lt;/MaximumCurrent&gt;&#xD;&#xA;    &lt;/PowerRequirements&gt;&#xD;&#xA;    &lt;PowerRequirements Voltage=&quot;5&quot;&gt;&#xD;&#xA;      &lt;TypicalCurrent&gt;0&lt;/TypicalCurrent&gt;&#xD;&#xA;      &lt;MaximumCurrent&gt;0&lt;/MaximumCurrent&gt;&#xD;&#xA;    &lt;/PowerRequirements&gt;&#xD;&#xA;  &lt;/Power&gt;&#xD;&#xA;  &lt;ProvidedSockets /&gt;&#xD;&#xA;  &lt;Assemblies&gt;&#xD;&#xA;    &lt;Assembly MFVersion=&quot;4.2&quot; Name=&quot;GTM.GHIElectronics.Breakout&quot; /&gt;&#xD;&#xA;    &lt;Assembly MFVersion=&quot;4.3&quot; Name=&quot;GTM.GHIElectronics.Breakout&quot; /&gt;&#xD;&#xA;  &lt;/Assemblies&gt;&#xD;&#xA;  &lt;LibrariesProvided /&gt;&#xD;&#xA;  &lt;Sockets&gt;&#xD;&#xA;    &lt;Socket Orientation=&quot;270&quot; Left=&quot;12.9&quot; Top=&quot;7&quot; TypesLabel=&quot;&quot; ConstructorOrder=&quot;1&quot; Optional=&quot;false&quot;&gt;&#xD;&#xA;      &lt;Types&gt;&#xD;&#xA;        &lt;Type&gt;A&lt;/Type&gt;&#xD;&#xA;        &lt;Type&gt;B&lt;/Type&gt;&#xD;&#xA;        &lt;Type&gt;C&lt;/Type&gt;&#xD;&#xA;        &lt;Type&gt;D&lt;/Type&gt;&#xD;&#xA;        &lt;Type&gt;E&lt;/Type&gt;&#xD;&#xA;        &lt;Type&gt;F&lt;/Type&gt;&#xD;&#xA;        &lt;Type&gt;G&lt;/Type&gt;&#xD;&#xA;        &lt;Type&gt;H&lt;/Type&gt;&#xD;&#xA;        &lt;Type&gt;I&lt;/Type&gt;&#xD;&#xA;        &lt;Type&gt;J&lt;/Type&gt;&#xD;&#xA;        &lt;Type&gt;K&lt;/Type&gt;&#xD;&#xA;        &lt;Type&gt;L&lt;/Type&gt;&#xD;&#xA;        &lt;Type&gt;M&lt;/Type&gt;&#xD;&#xA;        &lt;Type&gt;N&lt;/Type&gt;&#xD;&#xA;        &lt;Type&gt;O&lt;/Type&gt;&#xD;&#xA;        &lt;Type&gt;P&lt;/Type&gt;&#xD;&#xA;        &lt;Type&gt;Q&lt;/Type&gt;&#xD;&#xA;        &lt;Type&gt;R&lt;/Type&gt;&#xD;&#xA;        &lt;Type&gt;S&lt;/Type&gt;&#xD;&#xA;        &lt;Type&gt;T&lt;/Type&gt;&#xD;&#xA;        &lt;Type&gt;U&lt;/Type&gt;&#xD;&#xA;        &lt;Type&gt;V&lt;/Type&gt;&#xD;&#xA;        &lt;Type&gt;W&lt;/Type&gt;&#xD;&#xA;        &lt;Type&gt;X&lt;/Type&gt;&#xD;&#xA;        &lt;Type&gt;Y&lt;/Type&gt;&#xD;&#xA;        &lt;Type&gt;Z&lt;/Type&gt;&#xD;&#xA;        &lt;Type&gt;*&lt;/Type&gt;&#xD;&#xA;      &lt;/Types&gt;&#xD;&#xA;      &lt;Pins /&gt;&#xD;&#xA;    &lt;/Socket&gt;&#xD;&#xA;  &lt;/Sockets&gt;&#xD;&#xA;  &lt;ExtraLibrariesRequired /&gt;&#xD;&#xA;&lt;/ModuleDefinition&gt;" name="breakout3" moduleType="Gadgeteer.Modules.GHIElectronics.Breakout" moduleDefinitionId="6dab6643-da15-4665-8c2d-97f7d1d5f9a8">
+        <socketUses>
+          <moduleHasSocketUses Id="d94c0628-ff63-48c3-82e1-6ce29d5a3b73">
+            <socketUse Id="42ddb192-f30b-4886-8f82-bca4019cfc5d">
+              <socket>
+                <socketUseReferencesSocket Id="2a4f4d5a-f08e-4f24-83d2-1178d1f87325">
+                  <socketMoniker Id="94141066-121e-4d50-938e-6056196796c2" />
                 </socketUseReferencesSocket>
               </socket>
             </socketUse>

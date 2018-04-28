@@ -24,7 +24,7 @@ namespace NETMFBook {
         /// <summary>The Breakout module using socket 9 of the mainboard.</summary>
         private Gadgeteer.Modules.GHIElectronics.Breakout breakout;
         
-        /// <summary>The Display TE35 module using sockets 14, 13, 12 and 10 of the mainboard.</summary>
+        /// <summary>The Display TE35 module using sockets 14, 13 and 12 of the mainboard.</summary>
         private Gadgeteer.Modules.GHIElectronics.DisplayTE35 displayTE35;
         
         /// <summary>The LED Strip module using socket 8 of the mainboard.</summary>
@@ -35,6 +35,9 @@ namespace NETMFBook {
         
         /// <summary>The Breakout module using socket 4 of the mainboard.</summary>
         private Gadgeteer.Modules.GHIElectronics.Breakout breakout2;
+        
+        /// <summary>The Breakout module using socket 10 of the mainboard.</summary>
+        private Gadgeteer.Modules.GHIElectronics.Breakout breakout3;
         
         /// <summary>This property provides access to the Mainboard API. This is normally not necessary for an end user program.</summary>
         protected new static GHIElectronics.Gadgeteer.FEZSpiderII Mainboard {
@@ -61,10 +64,11 @@ namespace NETMFBook {
             this.usbClientDP = new GTM.GHIElectronics.USBClientDP(1);
             this.ethernetJ11D = new GTM.GHIElectronics.EthernetJ11D(7);
             this.breakout = new GTM.GHIElectronics.Breakout(9);
-            this.displayTE35 = new GTM.GHIElectronics.DisplayTE35(14, 13, 12, 10);
+            this.displayTE35 = new GTM.GHIElectronics.DisplayTE35(14, 13, 12, Socket.Unused);
             this.ledStrip = new GTM.GHIElectronics.LEDStrip(8);
             this.sdCard = new GTM.GHIElectronics.SDCard(5);
             this.breakout2 = new GTM.GHIElectronics.Breakout(4);
+            this.breakout3 = new GTM.GHIElectronics.Breakout(10);
         }
     }
 }
