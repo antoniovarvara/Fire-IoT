@@ -12,7 +12,7 @@ namespace NETMFBook
 {
     public class Mqtt
     {
-        private IPAddress EndPoint = IPAddress.Parse("52.57.156.220");
+        private IPAddress EndPoint = IPAddress.Parse("192.168.3.235");
         private MqttClient client;
         private Boolean isconnecting = false;
         public Mqtt() {
@@ -55,7 +55,7 @@ namespace NETMFBook
                 
         }
         private void connect() {
-            client.Connect("fez", "utente", "fezspiderII", false, 2);
+            client.Connect("Fire_sensor_board");
             this.Subscribe("incendio");
             StatusLed.led.SetLed(3, true);
             DisplayLCD.addMqttInfo(true);
@@ -78,8 +78,8 @@ namespace NETMFBook
             }
         }
         public ushort Subscribe(String topic) {
-            return client.Subscribe(new String[]{topic}, new byte[] {MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE});
-        }
+           return client.Subscribe(new String[]{topic}, new byte[] {MqttMsgBase.QOS_LEVEL_AT_LEAST_ONCE});
+       }
 
         public ushort Publish(String Topic, String Message)
         {
@@ -97,7 +97,7 @@ namespace NETMFBook
                     try
                     {
                         Debug.Print("MQTT pending message publishing...");
-                        client.Publish(Topic, Encoding.UTF8.GetBytes(pendingMessage), MqttMsgBase.QOS_LEVEL_AT_MOST_ONCE, true);
+                        client.Publish(Topic, Encoding.UTF8.GetBytes(pendingMessage), MqttMsgBase.QOS_LEVEL_AT_LEAST_ONCE,false);
                         Debug.Print("MQTT pending message published");
                     }
                     catch (Exception)
@@ -109,7 +109,7 @@ namespace NETMFBook
                     }
                 }
                 Debug.Print("MQTT Publish"+Message);
-                return client.Publish(Topic, Encoding.UTF8.GetBytes(Message), MqttMsgBase.QOS_LEVEL_AT_MOST_ONCE, true);
+                return client.Publish(Topic, Encoding.UTF8.GetBytes(Message), MqttMsgBase.QOS_LEVEL_AT_LEAST_ONCE, false);
             }
             catch(Exception e) {
                 //Debug.Print(e.StackTrace);

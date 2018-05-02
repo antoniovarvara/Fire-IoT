@@ -94,11 +94,13 @@ namespace NETMFBook
             COSensor co = new COSensor(breakout.CreateAnalogInput(GT.Socket.Pin.Five), mqtt, "co");
             FlameSensor flame = new FlameSensor(breakout.CreateAnalogInput(GT.Socket.Pin.Three), mqtt, "flame");
             TemperatureSensor temperature=new TemperatureSensor(breakout3.CreateAnalogInput(GT.Socket.Pin.Three),mqtt,"temperature");
-            pubTimer(smoke, 3000);
+            pubTimer(smoke, 10000);
             Thread.Sleep(500);
-            pubTimer(co, 3000);
+            pubTimer(co, 10000);
             Thread.Sleep(500);
-            pubTimer(flame, 3000);
+            pubTimer(flame, 10000);
+            Thread.Sleep(500);
+            pubTimer(temperature, 10000);
         }
 
         private void pubTimer(Sensor sens,int time=20000) {

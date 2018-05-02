@@ -25,8 +25,8 @@ namespace NETMFBook
         private static int startY = 10;
         private static string ip = null, netmask = null, gateway = null;
         private static int indexState = -1, indexIp = -1, indexNetmask = -1, indexGateway = -1, indexMqtt = -1, indexSD = -1;
-        private static int indexFlame = -1, indexCO = -1, indexSmoke = -1;
-        private static int flameValue = 0, coValue = 0, smokeValue = 0;
+        private static int indexFlame = -1, indexCO = -1, indexSmoke = -1, indexTemp = -1;
+        private static int flameValue = 0, coValue = 0, smokeValue = 0, tempValue = 0;
         private static bool stateNet = false, mqttConnected = false;
         private static void drawBuffer()
         {
@@ -72,6 +72,10 @@ namespace NETMFBook
                     if (c != 0 && c == indexSmoke + 1)
                     {
                         buffer.DrawRectangle(Color.White, 1, startX - 2, startY + (c * 10) - 2, ((int)(smokeValue * 300) / 1024), 14, 0, 0, GT.Color.Green, startX - 2, startY + (c * 10) - 2, GT.Color.Red, startX + 300, startY + 14, 255);
+                    }
+                    if (c != 0 && c == indexTemp + 1)
+                    {
+                        buffer.DrawRectangle(Color.White, 1, startX - 2, startY + (c * 10) - 2, ((int)(tempValue * 300) / 1024), 14, 0, 0, GT.Color.Green, startX - 2, startY + (c * 10) - 2, GT.Color.Red, startX + 300, startY + 14, 255);
                     }
                     buffer.DrawText(log[c], Resources.GetFont(Resources.FontResources.small), GT.Color.Cyan, startX, startY + (c * 10));
                    
@@ -225,6 +229,17 @@ namespace NETMFBook
                     }
                     log[indexSmoke] = "";
                     log[indexSmoke + 1] = "Smoke: " + smokeValue;
+                }
+                if (s.GetType().Name.Equals("TemperatureSensor"))
+                {
+                    tempValue = (int)System.Math.Round(value);
+                    if (indexTemp == -1)
+                    {
+                        indexTemp = counter++;
+                        counter++;
+                    }
+                    log[indexTemp] = "";
+                    log[indexTemp + 1] = "Temperature: " + tempValue;
                 }
             }
         }
