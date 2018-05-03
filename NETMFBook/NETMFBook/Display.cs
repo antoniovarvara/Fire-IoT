@@ -75,7 +75,7 @@ namespace NETMFBook
                     }
                     if (c != 0 && c == indexTemp + 1)
                     {
-                        buffer.DrawRectangle(Color.White, 1, startX - 2, startY + (c * 10) - 2, ((int)(tempValue * 300) / 1024), 14, 0, 0, GT.Color.Green, startX - 2, startY + (c * 10) - 2, GT.Color.Red, startX + 300, startY + 14, 255);
+                        buffer.DrawRectangle(Color.White, 1, startX - 2, startY + (c * 10) - 2, ((int)(tempValue * 300) / 160), 14, 0, 0, GT.Color.Green, startX - 2, startY + (c * 10) - 2, GT.Color.Red, startX + 300, startY + 14, 255);
                     }
                     buffer.DrawText(log[c], Resources.GetFont(Resources.FontResources.small), GT.Color.Cyan, startX, startY + (c * 10));
                    
