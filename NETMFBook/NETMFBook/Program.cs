@@ -86,9 +86,12 @@ namespace NETMFBook
             DisplayLCD.addSDInfo(true,0);
             Buzzer.init(breakout2.CreateDigitalOutput(GT.Socket.Pin.Four, false));
             Ethernet eth = new Ethernet(ethernetJ11D);
+            Debug.Print("Ethernet created");
             Mqtt mqtt = eth.MQTT;
+            Debug.Print("Mqtt created");
             MeasureDB.sd = sdCard;
             TimeSync.update();
+            Debug.Print("Time updated");
             //mqtt.Publish("status", "ciao");
             SmokeSensor smoke = new SmokeSensor(breakout.CreateAnalogInput(GT.Socket.Pin.Four), mqtt, "smoke");
             COSensor co = new COSensor(breakout.CreateAnalogInput(GT.Socket.Pin.Five), mqtt, "co");

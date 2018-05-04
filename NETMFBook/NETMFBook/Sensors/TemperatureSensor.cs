@@ -19,7 +19,7 @@ namespace NETMFBook.Sensors
         }
         public override double convert(double value) {
             double valore = value * 100; //0.01V per grado;
-            return System.Math.Truncate((valore)*100)/100; //trocamento a 2 cifre 
+            return System.Math.Truncate((valore)*10)/10; //trocamento a 1 cifra decimale 
         }
         public TemperatureSensor(Gadgeteer.SocketInterfaces.AnalogInput input, Mqtt mqtt, String name=null):base(input, mqtt)
         {

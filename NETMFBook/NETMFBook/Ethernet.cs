@@ -92,6 +92,7 @@ namespace NETMFBook
             Debug.Print("Network UP!");
             PrintNetworkState();
             mqtt.connectInfinite();
+            TimeSync.connectionEvent.Set();
         }
 
         void ethernetJ11D_NetworkDown(Gadgeteer.Modules.Module.NetworkModule sender, Gadgeteer.Modules.Module.NetworkModule.NetworkState state)
