@@ -22,6 +22,10 @@ namespace NETMFBook
             DisplayLCD.addMqttInfo(false);
             connectInfinite();
         }
+        public bool isConnected()
+        {
+            return client.IsConnected;
+        }
         public void connectInfinite() {
                 if (isconnecting == true) {
                     return;
@@ -88,12 +92,12 @@ namespace NETMFBook
                 if (client.IsConnected == false)
                 {
                     this.connectInfinite();
-                    Debug.Print("MQTT Publish store in sd");
-                    MeasureDB.addMeasure(Topic, Message);
+                    Debug.Print("MQTT Publish store in sd: "+ Message);
+                    MeasureDB.addMeasure(Message);
                     return 0;
                 }
-                while (client.IsConnected == true && MeasureDB.hasPendingMeasure(Topic)){
-                    String pendingMessage = MeasureDB.firstPendingMeasure(Topic);
+                while (client.IsConnected == true && MeasureDB.hasPendingMeasure()){
+                    String pendingMessage = MeasureDB.firstPendingMeasure();
                     try
                     {
                         Debug.Print("MQTT pending message publishing...");
@@ -103,8 +107,8 @@ namespace NETMFBook
                     catch (Exception)
                     {
                         Debug.Print("MQTT Publish pending FAILED");
-                        MeasureDB.addMeasure(Topic, pendingMessage);
-                        MeasureDB.addMeasure(Topic, Message);
+                        MeasureDB.addMeasure(pendingMessage);
+                        MeasureDB.addMeasure(Message);
                         return 0;
                     }
                 }

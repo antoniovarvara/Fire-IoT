@@ -39,7 +39,10 @@
   <!-- Everything below here is custom to .NET MF / Gadgeteer template-->
   <Import Project="$(NetMfTargetsBaseDir)$(TargetFrameworkVersion)\CSharp.Targets" />
   <ItemGroup>
+    <Compile Include="Configuration.cs" />
     <Compile Include="Database\MeasureDB.cs" />
+    <Compile Include="Database\MeasureOrchestrator.cs" />
+    <Compile Include="Database\Message.cs" />
     <Compile Include="Ethernet.cs" />
     <Compile Include="Mqtt.cs" />
     <Compile Include="Program.generated.cs">

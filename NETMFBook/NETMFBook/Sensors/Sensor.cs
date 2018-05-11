@@ -1,7 +1,7 @@
 using System;
 using Microsoft.SPOT;
 using GT = Gadgeteer;
-
+using NETMFBook.Database;
 using System.Threading;
 
 namespace NETMFBook.Sensors
@@ -20,10 +20,14 @@ namespace NETMFBook.Sensors
         }
         public double read()
         {
-            return this.value = this.convert(input.ReadVoltage());
+            this.value = this.convert(input.ReadVoltage());
+            DisplayLCD.addMeasure(this, this.value);
+            Debug.Print("Published name: " + this.name + " value: " + this.value);
+            return this.value;
         }
         public abstract double convert(double value);
         public abstract SensStatus checkValidity(double value);
+       /* 
         public void publish()
         {
             double reading = 0;
@@ -34,7 +38,7 @@ namespace NETMFBook.Sensors
                 {
                     reading = this.read();
                     DisplayLCD.addMeasure(this, reading);
-                    mqtt.Publish(this.name, Measure.Json(new Measure("fez24", this.name, checkValidity(reading), reading)));
+                    //mqtt.Publish(this.name, Measure.Json(new Measure("fez24", this.name, checkValidity(reading), reading)));
                     Debug.Print("Published name: "+ this.name+ " status: " + checkValidity(reading) + " value: " + reading);
                 }).Start();
                 lastValue = this.value;
@@ -44,6 +48,6 @@ namespace NETMFBook.Sensors
                 //Debug.Print("Not published "+ this.name + ", last value: "+lastValue+" read: "+reading+" repetition: "+repetition);
                 repetition++;
             }
-        }
+        }*/
     }
 }

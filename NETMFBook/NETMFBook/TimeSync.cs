@@ -29,7 +29,7 @@ namespace NETMFBook
                 TimeService.TimeSyncFailed += TimeService_TimeSyncFailed;
                 TimeService.Start();
                 Debug.Print("Time Service started");
-                Thread.Sleep(500);
+                Thread.Sleep(1000);
                 TimeService.UpdateNow(0);
                 Debug.Print("Time Service updating...");
                 Thread.Sleep(9000);

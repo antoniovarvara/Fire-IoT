@@ -26,6 +26,7 @@ namespace NETMFBook
     {
         private bool status;
         private static AutoResetEvent mountEvent = new AutoResetEvent(false);
+        Message message;
         // This method is run when the mainboard is powered up or reset.   
         void ProgramStarted()
         {
@@ -89,29 +90,38 @@ namespace NETMFBook
             Debug.Print("Ethernet created");
             Mqtt mqtt = eth.MQTT;
             Debug.Print("Mqtt created");
+            MeasureOrchestrator.setMqtt(mqtt);
             MeasureDB.sd = sdCard;
             TimeSync.update();
             Debug.Print("Time updated");
-            //mqtt.Publish("status", "ciao");
+            while (!mqtt.isConnected())
+            {
+                Thread.Sleep(1000);
+            }
+            mqtt.Publish(MeasureOrchestrator.id, Configuration.Json(new Configuration()));
             SmokeSensor smoke = new SmokeSensor(breakout.CreateAnalogInput(GT.Socket.Pin.Four), mqtt, "smoke");
             COSensor co = new COSensor(breakout.CreateAnalogInput(GT.Socket.Pin.Five), mqtt, "co");
             FlameSensor flame = new FlameSensor(breakout.CreateAnalogInput(GT.Socket.Pin.Three), mqtt, "flame");
             TemperatureSensor temperature=new TemperatureSensor(breakout3.CreateAnalogInput(GT.Socket.Pin.Three),mqtt,"temperature");
-            pubTimer(smoke, 10000);
-            Thread.Sleep(500);
-            pubTimer(co, 10000);
-            Thread.Sleep(500);
-            pubTimer(flame, 10000);
-            Thread.Sleep(500);
-            pubTimer(temperature, 10000);
+            registerSensor(temperature);
+            registerSensor(smoke);
+            registerSensor(co);
+            registerSensor(flame);
+            pubTimer(10000);
         }
 
-        private void pubTimer(Sensor sens,int time=20000) {
+        private void registerSensor(Sensor sens)
+        {
+            MeasureOrchestrator.register(sens);
+        }
+
+        private void pubTimer(int time=20000) {
             GT.Timer timer = new GT.Timer(time);
-            timer.Tick += (s) => sens.publish();
-            MeasureDB.mapTimers.Add(sens.name, timer);
+            timer.Tick += (s) => MeasureOrchestrator.publish();
+            MeasureDB.Timer = timer;
             timer.Start();
         }
+
 
         private void DisplayTimer(int time = 1000)
         {

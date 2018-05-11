@@ -11,35 +11,27 @@ namespace NETMFBook.Database
 {
     public static class MeasureDB
     {
-        public static Hashtable mapTimers = new Hashtable();
-        public static Hashtable mapMeasure = new Hashtable();
-        private static Hashtable mapId = new Hashtable();
+        public static GT.Timer Timer { get; set; }
+        public static ArrayList messages = new ArrayList();
+        private static long id;
         public static SDCard sd { get; set; }
         private const long MAX_N_FILE = 30;
         private static int standardTime = 3000;
 
-        public static void addMeasure(String sensor, String m)
+        public static void addMeasure(String m)
         {
             byte[] data = Encoding.UTF8.GetBytes(m);
             lock (sd)
             {
-                if (!mapMeasure.Contains(sensor))
-                {
-                    mapMeasure.Add(sensor, new ArrayList());
-                    mapId.Add(sensor, "0");
-                    Debug.Print("Added new sensor in the maps: " + sensor);
-                }
-                long id = Convert.ToInt64((String)mapId[sensor]);
-                String filename = sensor + "_measure_" + id;
-                ArrayList l = (ArrayList)mapMeasure[sensor];
-                l.Add(filename);
-                Debug.Print(sensor + " created new file " + id + ": " + m);
+                String filename = "measure_" + id;
+                messages.Add(filename);
+                Debug.Print("Created new file " + id + ": " + m);
                 sd.StorageDevice.WriteFile(filename, data);
-                mapId[sensor] = ((id + 1) % MAX_N_FILE).ToString();
-                /*if (id < 3 / 4 * MAX_N_FILE)
+                id = ((id + 1) % MAX_N_FILE);
+                /*if (messages.Count < 3 / 4 * MAX_N_FILE)
                 {
                     //imposta timer con intervallo standard
-                    GT.Timer timer = (GT.Timer)mapTimers[sensor];
+                    GT.Timer timer = Timer;
                     System.TimeSpan interval = new TimeSpan(standardTime);
                     timer.Interval = interval;
                 }
@@ -50,13 +42,13 @@ namespace NETMFBook.Database
                     System.TimeSpan interval = new TimeSpan(standardTime * 2);
                     timer.Interval = interval;
                 }*/
-                Debug.Print(sensor + " added new pending measure " + m);
+                Debug.Print("Added new pending measure " + m);
                 DisplayLCD.addSDInfo(true, sd.StorageDevice.ListFiles("").Length);
             }
             
         }
 
-        public static bool hasPendingMeasure(String s)
+        public static bool hasPendingMeasure()
         {
             /*ArrayList l;
             lock (map)
@@ -69,7 +61,6 @@ namespace NETMFBook.Database
             Debug.Print(s + " has " + l.Count + " pending measures");
             return l.Count > 0;*/
             int n = 0;
-            ArrayList l;
             lock (sd)
             {
                 if (VolumeInfo.GetVolumes()[0].IsFormatted)
@@ -81,10 +72,9 @@ namespace NETMFBook.Database
                     Debug.Print("Files available on " + rootDirectory + ":");
                     for (int i = 0; i < files.Length; i++)
                         Debug.Print(files[i]);
-                    if (mapMeasure.Count == 0) return false;
-                    l = (ArrayList)mapMeasure[s];
-                    Debug.Print(s + " has " + l.Count + " pending measures");
-                    n = l.Count;
+                    if (messages.Count == 0) return false;
+                    Debug.Print(messages.Count + " pending measures");
+                    n = messages.Count;
                     //n = sd.StorageDevice.ListFiles("").Length;
                     DisplayLCD.addSDInfo(true, sd.StorageDevice.ListFiles("").Length);
                     Debug.Print("File in sd " + n);
@@ -99,7 +89,7 @@ namespace NETMFBook.Database
             return n != 0;
         }
 
-        public static String firstPendingMeasure(String s)
+        public static String firstPendingMeasure()
         {
             /*ArrayList l;
             String res = null; 
@@ -115,7 +105,6 @@ namespace NETMFBook.Database
             }
             return res;*/
             String message = "";
-            ArrayList l;
             Debug.Print("Sending first Pending measure...");
             lock (sd)
             {
@@ -128,13 +117,12 @@ namespace NETMFBook.Database
                     Debug.Print("Files available on " + rootDirectory + ":");
                     for (int i = 0; i < files.Length; i++)
                         Debug.Print(files[i]);
-                    l = (ArrayList)mapMeasure[s];
                     String filename = "";
-                    if (l.Count > 0)
+                    if (messages.Count > 0)
                     {
-                        filename = (String)l[0];
-                        l.RemoveAt(0);
-                        Debug.Print(s + " removed " + filename);
+                        filename = (String)messages[0];
+                        messages.RemoveAt(0);
+                        Debug.Print("Removed " + filename);
                         FileStream f = sd.StorageDevice.OpenRead(filename);
                         StreamReader reader = new StreamReader(f);
                         message = reader.ReadToEnd();

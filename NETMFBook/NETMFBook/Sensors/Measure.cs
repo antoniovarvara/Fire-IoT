@@ -6,24 +6,43 @@ namespace NETMFBook.Sensors
 {
     class Measure
     {
-        public double Value { get; set; }
-        public SensStatus Status { get; set; }
-        public String Id { get; set; }
-        public String Name { get; set; }
-        public DateTime Timestamp { get; set; }
-        public Measure(String id, String name, SensStatus status, double value) {
-            this.Id = id;
-            this.Name = name;
-            this.Status = status;
-            this.Value = value;
-            this.Timestamp = DateTime.Now;
+        public double value { get; set; }
+        public SensStatus status { get; set; }
+        public String sensor { get; set; }
+        public DateTime iso_timestamp { get; set; }
+        public Measure(String name, SensStatus status, double value) {
+            this.sensor = name;
+            this.status = status;
+            this.value = value;
+            this.iso_timestamp = DateTime.Now;
         }
         public Measure() {}
-        public static string Json(Measure measure)
+        
+        // override object.Equals
+        public override bool Equals (object obj)
         {
-            JsonSerializer serializer = new JsonSerializer(DateTimeFormat.Default);
-            return serializer.Serialize(measure);
+            //       
+            // See the full list of guidelines at
+            //   http://go.microsoft.com/fwlink/?LinkID=85237  
+            // and also the guidance for operator== at
+            //   http://go.microsoft.com/fwlink/?LinkId=85238
+            //
+
+            if (obj == null || GetType() != obj.GetType()) 
+            {
+                return false;
+            }
+            Measure other = (Measure) obj;
+            return this.sensor.Equals(other.sensor) && this.value.Equals(other.value);
         }
+    
+        // override object.GetHashCode
+        public override int GetHashCode()
+        {
+            // TODO: write your implementation of GetHashCode() here
+            return this.sensor.GetHashCode() & this.value.GetHashCode();
+        }
+        
     }
     public enum SensStatus
 	{
