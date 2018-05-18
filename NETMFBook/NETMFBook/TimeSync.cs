@@ -29,10 +29,10 @@ namespace NETMFBook
                 TimeService.TimeSyncFailed += TimeService_TimeSyncFailed;
                 TimeService.Start();
                 Debug.Print("Time Service started");
-                Thread.Sleep(1000);
+                Thread.Sleep(3000);
                 TimeService.UpdateNow(0);
                 Debug.Print("Time Service updating...");
-                Thread.Sleep(9000);
+                Thread.Sleep(1000);
                 Debug.Print("It is : " + DateTime.Now.ToString());
                 DateTime time = DateTime.Now;
                 Utility.SetLocalTime(time);

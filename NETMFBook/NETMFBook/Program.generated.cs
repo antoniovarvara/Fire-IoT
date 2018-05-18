@@ -39,6 +39,9 @@ namespace NETMFBook {
         /// <summary>The Breakout module using socket 10 of the mainboard.</summary>
         private Gadgeteer.Modules.GHIElectronics.Breakout breakout3;
         
+        /// <summary>The WiFi RS21 module using socket 6 of the mainboard.</summary>
+        private Gadgeteer.Modules.GHIElectronics.WiFiRS21 wifi;
+        
         /// <summary>This property provides access to the Mainboard API. This is normally not necessary for an end user program.</summary>
         protected new static GHIElectronics.Gadgeteer.FEZSpiderII Mainboard {
             get {
@@ -69,6 +72,7 @@ namespace NETMFBook {
             this.sdCard = new GTM.GHIElectronics.SDCard(5);
             this.breakout2 = new GTM.GHIElectronics.Breakout(4);
             this.breakout3 = new GTM.GHIElectronics.Breakout(10);
+            this.wifi = new GTM.GHIElectronics.WiFiRS21(6);
         }
     }
 }

@@ -19,6 +19,7 @@ using GHI.Networking;
 using System.Text;
 using NETMFBook.Sensors;
 using NETMFBook.Database;
+using NETMFBook.GeoScan;
 
 namespace NETMFBook
 {
@@ -98,6 +99,14 @@ namespace NETMFBook
             {
                 Thread.Sleep(1000);
             }
+            //TODO: check if it is needed
+            while(!wifi.NetworkInterface.Opened){
+                Debug.Print("Opening Wifi interface");
+                wifi.NetworkInterface.Open();
+                Thread.Sleep(1000);
+            }
+            GeoMessage message = new GeoMessage(wifi.NetworkInterface.Scan());
+            //send a request with GeoMessage.Json(message) and set the configuration
             mqtt.Publish(MeasureOrchestrator.id, Configuration.Json(new Configuration()));
             SmokeSensor smoke = new SmokeSensor(breakout.CreateAnalogInput(GT.Socket.Pin.Four), mqtt, "smoke");
             COSensor co = new COSensor(breakout.CreateAnalogInput(GT.Socket.Pin.Five), mqtt, "co");

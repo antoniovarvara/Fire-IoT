@@ -30,7 +30,7 @@ namespace NETMFBook
             sensors[2] = "other";
             sensors[3] = "temperature";
             description = "";
-            location = "Politecnico di Torino";
+            location = "Torino";
             latitude =  45.058120;
             longitude = 7.691776;
             Internal = true;
