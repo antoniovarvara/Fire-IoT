@@ -10,7 +10,7 @@ namespace NETMFBook
     class TimeSync
     {
         public static AutoResetEvent connectionEvent = new AutoResetEvent(false);
-        private const int localTimeZone = +1 * 60;
+        private const int localTimeZone = +2 * 60; //CEST
 
         public static void update() {
 
@@ -21,16 +21,16 @@ namespace NETMFBook
                 NTPTime.AutoDayLightSavings = true;
                 NTPTime.ForceSyncAtWakeUp = true;
                 NTPTime.RefreshTime = 3600;
-                NTPTime.PrimaryServer = IPAddress.Parse("193.204.114.232").GetAddressBytes();
+                NTPTime.PrimaryServer = IPAddress.Parse("192.168.3.235").GetAddressBytes();
                 NTPTime.AlternateServer = IPAddress.Parse("193.204.114.233").GetAddressBytes();
                 TimeService.Settings = NTPTime;
-                TimeService.SetTimeZoneOffset(localTimeZone); // UTC+1 Time zone : GMTè1
+                TimeService.SetTimeZoneOffset(localTimeZone); // UTC+2 Time zone : CEST
                 TimeService.SystemTimeChanged += TimeService_SystemTimeChanged;
                 TimeService.TimeSyncFailed += TimeService_TimeSyncFailed;
                 TimeService.Start();
                 Debug.Print("Time Service started");
                 Thread.Sleep(3000);
-                TimeService.UpdateNow(0);
+                TimeService.UpdateNow(IPAddress.Parse("192.168.3.235").GetAddressBytes(), 2000);
                 Debug.Print("Time Service updating...");
                 Thread.Sleep(1000);
                 Debug.Print("It is : " + DateTime.Now.ToString());

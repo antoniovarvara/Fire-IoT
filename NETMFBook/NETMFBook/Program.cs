@@ -27,6 +27,7 @@ namespace NETMFBook
     {
         private bool status;
         private static AutoResetEvent mountEvent = new AutoResetEvent(false);
+        private Mqtt mqtt;
         Message message;
         // This method is run when the mainboard is powered up or reset.   
         void ProgramStarted()
@@ -46,7 +47,16 @@ namespace NETMFBook
             StatusLed.led.SetLed(0, true);
             DisplayLCD.lcd = displayTE35;
             DisplayTimer();
-            RemovableMedia.Insert += (sender, e) => { mountEvent.Set(); Debug.Print("SD Mounted"); };
+            while (!wifi.NetworkInterface.Opened)
+            {
+                Debug.Print("Opening Wifi interface");
+                wifi.NetworkInterface.Open();
+                Thread.Sleep(1000);
+            }
+            GeoMessage geomessage = new GeoMessage(wifi.NetworkInterface.Scan());
+            wifi.NetworkInterface.Close();
+            RemovableMedia.Insert += (sender, e) => {
+                mountEvent.Set(); Debug.Print("SD Mounted"); };
             while(!sdCard.IsCardInserted)
             {
                 DisplayLCD.addSDInfo(false, 0);
@@ -61,7 +71,7 @@ namespace NETMFBook
                 if(!sdCard.IsCardMounted)
                     sdCard.Mount();
             }
-            mountEvent.WaitOne();
+            //mountEvent.WaitOne();
             //byte[] data = Encoding.UTF8.GetBytes("Hello World!");
             //sdCard.StorageDevice.WriteFile("measure" + 0, data);
             //sdCard.StorageDevice.CreateDirectory(@"test");
@@ -89,7 +99,7 @@ namespace NETMFBook
             Buzzer.init(breakout2.CreateDigitalOutput(GT.Socket.Pin.Four, false));
             Ethernet eth = new Ethernet(ethernetJ11D);
             Debug.Print("Ethernet created");
-            Mqtt mqtt = eth.MQTT;
+            mqtt = eth.MQTT;
             Debug.Print("Mqtt created");
             MeasureOrchestrator.setMqtt(mqtt);
             MeasureDB.sd = sdCard;
@@ -99,15 +109,12 @@ namespace NETMFBook
             {
                 Thread.Sleep(1000);
             }
-            //TODO: check if it is needed
-            while(!wifi.NetworkInterface.Opened){
-                Debug.Print("Opening Wifi interface");
-                wifi.NetworkInterface.Open();
-                Thread.Sleep(1000);
-            }
-            GeoMessage message = new GeoMessage(wifi.NetworkInterface.Scan());
+            POSTContent pc = POSTContent.CreateTextBasedContent(GeoMessage.Json(geomessage));
+            HttpRequest wc = HttpHelper.CreateHttpPostRequest("http://aws.r4ffy.info/geolocation", pc, "application/json");
+            wc.ResponseReceived += wc_ResponseReceived;
+            wc.SendRequest();
+
             //send a request with GeoMessage.Json(message) and set the configuration
-            mqtt.Publish(MeasureOrchestrator.id, Configuration.Json(new Configuration()));
             SmokeSensor smoke = new SmokeSensor(breakout.CreateAnalogInput(GT.Socket.Pin.Four), mqtt, "smoke");
             COSensor co = new COSensor(breakout.CreateAnalogInput(GT.Socket.Pin.Five), mqtt, "co");
             FlameSensor flame = new FlameSensor(breakout.CreateAnalogInput(GT.Socket.Pin.Three), mqtt, "flame");
@@ -117,6 +124,15 @@ namespace NETMFBook
             registerSensor(co);
             registerSensor(flame);
             pubTimer(10000);
+        }
+
+        void wc_ResponseReceived(HttpRequest sender, HttpResponse response)
+        {
+            Object o = Json.NETMF.JsonSerializer.DeserializeString(response.Text);
+            Object location = (Object)((System.Collections.Hashtable)o)["location"];
+            Double lat = (Double) ((System.Collections.Hashtable)location)["lat"];
+            Double lng = (Double)((System.Collections.Hashtable)location)["lng"];
+            mqtt.Publish("cfg", Configuration.Json(new Configuration(lat,lng)));
         }
 
         private void registerSensor(Sensor sens)

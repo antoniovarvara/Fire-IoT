@@ -9,12 +9,17 @@ namespace NETMFBook.Sensors
         public double value { get; set; }
         public SensStatus status { get; set; }
         public String sensor { get; set; }
-        public DateTime iso_timestamp { get; set; }
+        public String iso_timestamp { 
+            get {
+                return timestamp.ToString("yyyy-MM-ddTHH:mm:ss+02:00");
+            }
+        }
+        private DateTime timestamp;
         public Measure(String name, SensStatus status, double value) {
             this.sensor = name;
             this.status = status;
             this.value = value;
-            this.iso_timestamp = DateTime.Now;
+            this.timestamp = DateTime.Now;
         }
         public Measure() {}
         

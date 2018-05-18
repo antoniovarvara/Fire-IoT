@@ -115,7 +115,7 @@ namespace NETMFBook
                 Debug.Print("MQTT Publish"+Message);
                 return client.Publish(Topic, Encoding.UTF8.GetBytes(Message), MqttMsgBase.QOS_LEVEL_AT_LEAST_ONCE, false);
             }
-            catch(Exception e) {
+            catch(Exception) {
                 //Debug.Print(e.StackTrace);
                 Debug.Print("MQTT Publish FAILED");
                 return 0;

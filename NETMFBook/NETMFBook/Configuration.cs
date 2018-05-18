@@ -16,12 +16,15 @@ namespace NETMFBook
         public String location { get; set; }
         public double latitude { get; set; }
         public double longitude { get; set; }
-        public bool Internal { get; set; }
+        public bool  @internal { get; set; }
+        public Configuration()
+        {
 
-        public Configuration() { 
+        }
+        public Configuration(double lat,double lng) { 
             version = 1;
             id = "FEZ_24";
-            name = "";
+            name = "Iot Fire monitoring";
             group = "FEZ 24";
             type = "fire";
             sensors = new String[4];
@@ -29,11 +32,11 @@ namespace NETMFBook
             sensors[1] = "smoke";
             sensors[2] = "other";
             sensors[3] = "temperature";
-            description = "";
+            description = "Our platform monitor fire";
             location = "Torino";
-            latitude =  45.058120;
-            longitude = 7.691776;
-            Internal = true;
+            latitude = lat;
+            longitude = lng;
+            @internal = true;
         }
 
         public static string Json(Configuration msg)

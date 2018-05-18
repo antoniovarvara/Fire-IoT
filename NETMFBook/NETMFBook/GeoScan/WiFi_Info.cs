@@ -18,7 +18,7 @@ namespace NETMFBook.GeoScan
         {
              ssid = info.Ssid;
              channel = info.Channel;
-             rssi = info.Rssi;
+             rssi = -info.Rssi;
              authMode = (int) info.SecurityMode;
              bssid = GetMACAddress(info.PhysicalAddress);
         }
@@ -26,7 +26,7 @@ namespace NETMFBook.GeoScan
          // borrowed from GHI's documentation
         string GetMACAddress(byte[] PhysicalAddress)
         {
-            return ByteToHex(PhysicalAddress[0]) + "-"
+            return ByteToHex(PhysicalAddress[0]) + ":"
                                 + ByteToHex(PhysicalAddress[1]) + ":"
                                 + ByteToHex(PhysicalAddress[2]) + ":"
                                 + ByteToHex(PhysicalAddress[3]) + ":"
@@ -39,6 +39,5 @@ namespace NETMFBook.GeoScan
             string hex = "0123456789abcdef";
             return new string(new char[] { hex[(number & 0xF0) >> 4], hex[number & 0x0F] });
         }
-    }
     }
 }
