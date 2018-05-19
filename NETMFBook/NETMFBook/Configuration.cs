@@ -28,9 +28,9 @@ namespace NETMFBook
             group = "FEZ 24";
             type = "fire";
             sensors = new String[4];
-            sensors[0] = "heating";
+            sensors[0] = "flame";
             sensors[1] = "smoke";
-            sensors[2] = "other";
+            sensors[2] = "co";
             sensors[3] = "temperature";
             description = "Our platform monitor fire";
             location = "Torino";
