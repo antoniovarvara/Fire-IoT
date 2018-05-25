@@ -22,11 +22,6 @@ namespace NETMFBook.Database
             sensors.Add(sens);
         }
 
-        public static void addMessage()
-        {
-
-        }
-
         public static void publish()
         {
             Message msg = new Message(id);
@@ -35,7 +30,7 @@ namespace NETMFBook.Database
                 double reading = s.read();
                 msg.addMeasure(new Measure(s.name, s.checkValidity(reading), reading));
             }
-            if (lastMessage == null || (!msg.Equals(lastMessage) && repetition < 1)){
+            if (lastMessage == null || !msg.Equals(lastMessage) || repetition > 10){
                     repetition = 0;
                     mqtt.Publish(id, Message.Json(msg));
                     lastMessage = msg;

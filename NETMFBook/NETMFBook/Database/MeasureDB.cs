@@ -15,8 +15,8 @@ namespace NETMFBook.Database
         public static ArrayList messages = new ArrayList();
         private static long id;
         public static SDCard sd { get; set; }
-        private const long MAX_N_FILE = 30;
-        private static int standardTime = 3000;
+        private const long MAX_N_FILE = 300;
+        private static int standardTime = 10000;
 
         public static void addMeasure(String m)
         {
