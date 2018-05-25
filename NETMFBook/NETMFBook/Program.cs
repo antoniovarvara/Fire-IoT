@@ -28,7 +28,6 @@ namespace NETMFBook
         private bool status;
         private static AutoResetEvent mountEvent = new AutoResetEvent(false);
         private Mqtt mqtt;
-        Message message;
         // This method is run when the mainboard is powered up or reset.   
         void ProgramStarted()
         {
@@ -43,7 +42,7 @@ namespace NETMFBook
         
         private void init()
         {
-            Buzzer.init(breakout2.CreateDigitalOutput(GT.Socket.Pin.Four, false));
+            Buzzer.init(breakout2.CreatePwmOutput(GT.Socket.Pin.Four));
             StatusLed.led = ledStrip;
             StatusLed.led.SetLed(0, true);
             DisplayLCD.lcd = displayTE35;
@@ -115,10 +114,10 @@ namespace NETMFBook
             wc.SendRequest();
 
             //send a request with GeoMessage.Json(message) and set the configuration
-            SmokeSensor smoke = new SmokeSensor(breakout.CreateAnalogInput(GT.Socket.Pin.Four), mqtt, "smoke");
-            COSensor co = new COSensor(breakout.CreateAnalogInput(GT.Socket.Pin.Five), mqtt, "co");
-            FlameSensor flame = new FlameSensor(breakout.CreateAnalogInput(GT.Socket.Pin.Three), mqtt, "flame");
-            TemperatureSensor temperature=new TemperatureSensor(breakout3.CreateAnalogInput(GT.Socket.Pin.Three),mqtt,"temperature");
+            SmokeSensor smoke = new SmokeSensor(breakout.CreateAnalogInput(GT.Socket.Pin.Four), "smoke");
+            COSensor co = new COSensor(breakout.CreateAnalogInput(GT.Socket.Pin.Five), "co");
+            FlameSensor flame = new FlameSensor(breakout.CreateAnalogInput(GT.Socket.Pin.Three), "flame");
+            TemperatureSensor temperature=new TemperatureSensor(breakout3.CreateAnalogInput(GT.Socket.Pin.Three),"temperature");
             registerSensor(temperature);
             registerSensor(smoke);
             registerSensor(co);

@@ -9,7 +9,7 @@ namespace NETMFBook.Sensors
             if (value < 150 && value > 2) {
                 return SensStatus.OK;
             }
-            else if (value == 0)
+            else if (value <= 2)
             {
                 return SensStatus.FAIL;
             }
@@ -21,7 +21,7 @@ namespace NETMFBook.Sensors
             double valore = value * 100; //0.01V per grado;
             return System.Math.Truncate((valore)*10)/10; //trocamento a 1 cifra decimale 
         }
-        public TemperatureSensor(Gadgeteer.SocketInterfaces.AnalogInput input, Mqtt mqtt, String name=null):base(input, mqtt)
+        public TemperatureSensor(Gadgeteer.SocketInterfaces.AnalogInput input, String name=null):base(input)
         {
             this.name = name==null?this.GetType().Name:name;
         }

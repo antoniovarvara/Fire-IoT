@@ -16,7 +16,7 @@ namespace NETMFBook.Database
         private static long id;
         public static SDCard sd { get; set; }
         private const long MAX_N_FILE = 300;
-        private static int standardTime = 10000;
+       // private static int standardTime = 10000;
 
         public static void addMeasure(String m)
         {

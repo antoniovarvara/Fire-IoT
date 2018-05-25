@@ -5,8 +5,6 @@ namespace NETMFBook.Sensors
 {
     class AlarmMessage
     {
-        private object p;
-
         public bool Alarm { get; set; }
         public AlarmMessage() { }
         public AlarmMessage(bool alarm) {

@@ -9,13 +9,9 @@ namespace NETMFBook.Sensors
     public abstract class Sensor
     {
         private GT.SocketInterfaces.AnalogInput input;
-        private int repetition;
         protected double value, oldValue = -1;
-        private Guid id=new Guid();
-        private Mqtt mqtt;
         public string name { get; protected set; }
-        public Sensor(GT.SocketInterfaces.AnalogInput input, Mqtt mqtt) {
-            this.mqtt = mqtt;
+        public Sensor(GT.SocketInterfaces.AnalogInput input) {
             this.input = input;
         }
         public double read()
