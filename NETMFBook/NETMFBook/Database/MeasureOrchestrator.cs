@@ -25,12 +25,15 @@ namespace NETMFBook.Database
         public static void publish()
         {
             Message msg = new Message(id);
+            bool publishNeed = false;
+
             foreach (Sensor s in sensors)
             {
                 double reading = s.read();
+                publishNeed = publishNeed | s.changedSignificantly();
                 msg.addMeasure(new Measure(s.name, s.checkValidity(reading), reading));
             }
-            if (lastMessage == null || !msg.Equals(lastMessage) || repetition > 10){
+            if (lastMessage == null || publishNeed || repetition > 10 ){
                     repetition = 0;
                     mqtt.Publish(id, Message.Json(msg));
                     lastMessage = msg;
@@ -41,5 +44,9 @@ namespace NETMFBook.Database
             }
         }
 
+
     }
+
+    
+
 }

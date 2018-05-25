@@ -4,12 +4,13 @@ using System.Threading;
 using Microsoft.SPOT;
 using Microsoft.SPOT.Hardware;
 using Microsoft.SPOT.Time;
-
+using Gadgeteer.Networking;
 namespace NETMFBook
 {
     class TimeSync
     {
         public static AutoResetEvent connectionEvent = new AutoResetEvent(false);
+        public static AutoResetEvent timeSetted = new AutoResetEvent(false);
         private const int localTimeZone = +2 * 60; //CEST
 
         public static void update() {
@@ -17,7 +18,7 @@ namespace NETMFBook
             try
             {
                 connectionEvent.WaitOne();
-                var NTPTime = new TimeServiceSettings();
+                /*var NTPTime = new TimeServiceSettings();
                 NTPTime.AutoDayLightSavings = true;
                 NTPTime.ForceSyncAtWakeUp = true;
                 NTPTime.RefreshTime = 3600;
@@ -29,14 +30,37 @@ namespace NETMFBook
                 TimeService.TimeSyncFailed += TimeService_TimeSyncFailed;
                 TimeService.Start();
                 Debug.Print("Time Service started");
-                Thread.Sleep(3000);
-                TimeService.UpdateNow(IPAddress.Parse("192.168.3.235").GetAddressBytes(), 2000);
+                //TimeService.UpdateNow(IPAddress.Parse("192.168.3.235").GetAddressBytes(), 2000);
                 Debug.Print("Time Service updating...");
                 Thread.Sleep(1000);
+                while (DateTime.Now.Ticks < 1527248910)
+                {
+                    Debug.Print("Waiting for time update");
+                    Thread.Sleep(1000);
+                }
                 Debug.Print("It is : " + DateTime.Now.ToString());
                 DateTime time = DateTime.Now;
                 Utility.SetLocalTime(time);
                 TimeService.Stop();
+                Debug.Print("Time Service updated");
+                */
+                Debug.Print("Time Service started");
+                while (DateTime.Now.Ticks < 130717343174511258)
+                {
+                    Thread.Sleep(2000);
+                    try
+                    {
+
+                        HttpRequest requestTime = HttpHelper.CreateHttpGetRequest("http://api.timezonedb.com/v2/get-time-zone?key=7UFPFA9D0NVV&by=zone&zone=CEST&format=json");
+                        requestTime.ResponseReceived += time_ResponseReceived;
+                        requestTime.SendRequest();
+                        timeSetted.WaitOne();
+                    }
+                    catch (Exception)
+                    {
+                        continue;
+                    }
+                }
                 Debug.Print("Time Service updated");
             }
             catch (Exception ex)
@@ -45,6 +69,23 @@ namespace NETMFBook
             }
         
         
+        }
+
+
+        static void time_ResponseReceived(HttpRequest sender, HttpResponse response)
+        {
+            try
+            {
+                DateTime unixStart = new DateTime(1970, 1, 1, 0, 0, 0, 0);
+                Object o = Json.NETMF.JsonSerializer.DeserializeString(response.Text);
+                long timestamp = (long)((System.Collections.Hashtable)o)["timestamp"];
+                Utility.SetLocalTime(new DateTime(timestamp * TimeSpan.TicksPerSecond + unixStart.Ticks));
+                timeSetted.Set();
+            }
+            catch (Exception)
+            {
+                Debug.Print("Error in time service");
+            }
         }
 
         static void TimeService_SystemTimeChanged(object sender, SystemTimeChangedEventArgs e)

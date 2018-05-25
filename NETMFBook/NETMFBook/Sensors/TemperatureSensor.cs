@@ -25,5 +25,9 @@ namespace NETMFBook.Sensors
         {
             this.name = name==null?this.GetType().Name:name;
         }
+        public override bool changedSignificantly()
+        {
+            return System.Math.Abs(this.value - this.oldValue) > 0.5;
+        }
     }
 }

@@ -10,7 +10,7 @@ namespace NETMFBook.Sensors
     {
         private GT.SocketInterfaces.AnalogInput input;
         private int repetition;
-        private double value, lastValue = -1;
+        protected double value, oldValue = -1;
         private Guid id=new Guid();
         private Mqtt mqtt;
         public string name { get; protected set; }
@@ -20,6 +20,7 @@ namespace NETMFBook.Sensors
         }
         public double read()
         {
+            this.oldValue = this.value;
             this.value = this.convert(input.ReadVoltage());
             DisplayLCD.addMeasure(this, this.value);
             Debug.Print("Published name: " + this.name + " value: " + this.value);
@@ -27,6 +28,7 @@ namespace NETMFBook.Sensors
         }
         public abstract double convert(double value);
         public abstract SensStatus checkValidity(double value);
+        public abstract bool changedSignificantly();
        /* 
         public void publish()
         {

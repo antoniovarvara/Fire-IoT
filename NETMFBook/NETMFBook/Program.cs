@@ -38,11 +38,12 @@ namespace NETMFBook
             DisplayLCD.addSDInfo(false, 0);
             new Thread(() => init()).Start();
             Debug.Print("Program Started");
-
+            
         }
         
         private void init()
         {
+            Buzzer.init(breakout2.CreateDigitalOutput(GT.Socket.Pin.Four, false));
             StatusLed.led = ledStrip;
             StatusLed.led.SetLed(0, true);
             DisplayLCD.lcd = displayTE35;
@@ -96,7 +97,6 @@ namespace NETMFBook
                     "Format on PC with FAT32/FAT16 first!");
             }
             DisplayLCD.addSDInfo(true,0);
-            Buzzer.init(breakout2.CreateDigitalOutput(GT.Socket.Pin.Four, false));
             Ethernet eth = new Ethernet(ethernetJ11D);
             Debug.Print("Ethernet created");
             mqtt = eth.MQTT;
@@ -123,7 +123,7 @@ namespace NETMFBook
             registerSensor(smoke);
             registerSensor(co);
             registerSensor(flame);
-            pubTimer(10000);
+            pubTimer(3000);
         }
 
         void wc_ResponseReceived(HttpRequest sender, HttpResponse response)
