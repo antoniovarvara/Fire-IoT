@@ -42,16 +42,24 @@ namespace NETMFBook
         
         private void init()
         {
-            Buzzer.init(breakout2.CreatePwmOutput(GT.Socket.Pin.Four));
+            Buzzer.init(breakout2.CreatePwmOutput(GT.Socket.Pin.Nine));
             StatusLed.led = ledStrip;
             StatusLed.led.SetLed(0, true);
             DisplayLCD.lcd = displayTE35;
             DisplayTimer();
             while (!wifi.NetworkInterface.Opened)
             {
-                Debug.Print("Opening Wifi interface");
-                wifi.NetworkInterface.Open();
-                Thread.Sleep(1000);
+                try
+                {
+                    Debug.Print("Opening Wifi interface");
+                    wifi.NetworkInterface.Open();
+                    Thread.Sleep(1000);
+                }
+                catch (Exception)
+                {
+                    Thread.Sleep(1000);
+                    continue;
+                }
             }
             GeoMessage geomessage = new GeoMessage(wifi.NetworkInterface.Scan());
             wifi.NetworkInterface.Close();
@@ -127,11 +135,18 @@ namespace NETMFBook
 
         void wc_ResponseReceived(HttpRequest sender, HttpResponse response)
         {
-            Object o = Json.NETMF.JsonSerializer.DeserializeString(response.Text);
-            Object location = (Object)((System.Collections.Hashtable)o)["location"];
-            Double lat = (Double) ((System.Collections.Hashtable)location)["lat"];
-            Double lng = (Double)((System.Collections.Hashtable)location)["lng"];
-            mqtt.Publish("cfg", Configuration.Json(new Configuration(lat,lng)));
+            try
+            {
+                Object o = Json.NETMF.JsonSerializer.DeserializeString(response.Text);
+                Object location = (Object)((System.Collections.Hashtable)o)["location"];
+                Double lat = (Double)((System.Collections.Hashtable)location)["lat"];
+                Double lng = (Double)((System.Collections.Hashtable)location)["lng"];
+                mqtt.Publish("cfg", Configuration.Json(new Configuration(lat, lng)));
+            }
+            catch (Exception)
+            {
+                mqtt.Publish("cfg", Configuration.Json(new Configuration(45.0631, 7.66004)));
+            }
         }
 
         private void registerSensor(Sensor sens)
