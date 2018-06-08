@@ -8,11 +8,16 @@ namespace NETMFBook.Database
 {
     class Message
     {
+        public int version { get; set; }
         public String device_id { get; set; }
+        public String iso_timestamp { get; set; }
+
         public ArrayList measurements{get;set;}
         public Message(String id)
         {
             this.device_id = id;
+            this.version = 2;
+            this.iso_timestamp = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss+02:00");
             this.measurements = new ArrayList();
         }
 

@@ -7,7 +7,7 @@ using uPLibrary.Networking.M2Mqtt.Messages;
 using System.Threading;
 using NETMFBook.Database;
 using NETMFBook.Sensors;
-
+using System.Collections;
 namespace NETMFBook
 {
     public class Mqtt
@@ -15,12 +15,28 @@ namespace NETMFBook
         private IPAddress EndPoint = IPAddress.Parse("192.168.3.235");
         private MqttClient client;
         private Boolean isconnecting = false;
+        private Hashtable pendingSend = new Hashtable();
         public Mqtt() {
             client = new MqttClient(EndPoint);
+            //client.Settings.InflightQueueSize = 5;
             client.ConnectionClosed += client_ConnectionClosed;
             client.MqttMsgPublishReceived += client_MqttMsgPublishReceived;
+            client.MqttMsgPublished += client_MqttMsgPublished;
             DisplayLCD.addMqttInfo(false);
             connectInfinite();
+        }
+
+        void client_MqttMsgPublished(object sender, MqttMsgPublishedEventArgs e)
+        {
+            if (!e.IsPublished)
+            {
+                String message = (String)pendingSend[e.MessageId];
+                if (message != null) {
+                    MeasureDB.addMeasure(message);
+                    pendingSend.Remove(e.MessageId);
+                }
+            }
+            Debug.Print("MQTT Publish status:"+ e.IsPublished+ " message "+ e.MessageId);
         }
         public bool isConnected()
         {
@@ -59,7 +75,7 @@ namespace NETMFBook
                 
         }
         private void connect() {
-            client.Connect("Fire_sensor_board");
+            client.Connect("Fire_sensor_board",null,null,true,3);
             this.Subscribe("incendio");
             StatusLed.led.SetLed(3, true);
             DisplayLCD.addMqttInfo(true);
@@ -79,6 +95,8 @@ namespace NETMFBook
                 String message = new String(Encoding.UTF8.GetChars(e.Message));
                 AlarmMessage m = new AlarmMessage(message);
                 Buzzer.setState(m.Alarm);
+                StatusLed.led.SetLed(5, m.Alarm);
+                StatusLed.led.SetLed(6, m.Alarm);
             }
         }
         public ushort Subscribe(String topic) {
@@ -96,24 +114,21 @@ namespace NETMFBook
                     MeasureDB.addMeasure(Message);
                     return 0;
                 }
-                while (client.IsConnected == true && MeasureDB.hasPendingMeasure()){
-                    String pendingMessage = MeasureDB.firstPendingMeasure();
-                    try
-                    {
-                        Debug.Print("MQTT pending message publishing...");
-                        client.Publish(Topic, Encoding.UTF8.GetBytes(pendingMessage), MqttMsgBase.QOS_LEVEL_AT_LEAST_ONCE,false);
-                        Debug.Print("MQTT pending message published");
-                    }
-                    catch (Exception)
-                    {
-                        Debug.Print("MQTT Publish pending FAILED");
-                        MeasureDB.addMeasure(pendingMessage);
-                        MeasureDB.addMeasure(Message);
-                        return 0;
-                    }
-                }
+                //PublishOld(Topic, Message);
                 Debug.Print("MQTT Publish"+Message);
-                return client.Publish(Topic, Encoding.UTF8.GetBytes(Message), MqttMsgBase.QOS_LEVEL_AT_LEAST_ONCE, false);
+                try
+                {
+                    ushort retval=client.Publish(Topic, Encoding.UTF8.GetBytes(Message), MqttMsgBase.QOS_LEVEL_AT_LEAST_ONCE, false);
+                    pendingSend.Add(retval, Message);
+                    return retval;
+                }
+                catch (Exception)
+                {
+                    Debug.Print("MQTT Publish pending FAILED");
+                    MeasureDB.addMeasure(Message);
+                    //try { client.Disconnect();}catch (Exception) { };
+                    return 0;
+                }
             }
             catch(Exception) {
                 //Debug.Print(e.StackTrace);
@@ -121,5 +136,33 @@ namespace NETMFBook
                 return 0;
             }
         }
+        public ushort PublishOld(String Topic, String Message=null) {
+            if (client.IsConnected == true && MeasureDB.hasPendingMeasure())
+            {
+                if (Topic.Equals("cfg"))
+                {
+                    return 0;
+                }
+                String pendingMessage = MeasureDB.firstPendingMeasure();
+                try
+                {
+                    Debug.Print("MQTT pending message publishing...");
+                    pendingSend.Add(client.Publish(Topic, Encoding.UTF8.GetBytes(pendingMessage), MqttMsgBase.QOS_LEVEL_AT_LEAST_ONCE, false), pendingMessage);
+                    Debug.Print("MQTT pending message published");
+                }
+                catch (Exception)
+                {
+                    Debug.Print("MQTT Publish pending FAILED");
+                    MeasureDB.addMeasure(pendingMessage);
+                    if (Message != null)
+                    {
+                        MeasureDB.addMeasure(Message);
+                    }
+                    return 0;
+                }
+            }
+            return 0;
+        }
+
     }
 }

@@ -85,6 +85,8 @@ namespace NETMFBook
             catch (Exception)
             {
                 Debug.Print("Error in time service");
+                timeSetted.Set();
+                update();
             }
         }
 

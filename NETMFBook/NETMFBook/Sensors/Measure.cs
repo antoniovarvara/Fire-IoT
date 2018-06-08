@@ -7,8 +7,24 @@ namespace NETMFBook.Sensors
     class Measure
     {
         public double value { get; set; }
-        public SensStatus status { get; set; }
-        public String sensor { get; set; }
+        public string status { get { 
+            switch (intstatus)
+	        {
+                case SensStatus.OK:{
+                    return "OK";
+                }
+                case SensStatus.FAIL:{
+                    return "FAIL";
+                }
+                case SensStatus.OUTOFRANGE:{
+                    return "OUTOFRANGE";
+                }
+	        }
+            return "";
+        }}
+        public SensStatus intstatus;
+        public int sensor_id { get { return Int32.Parse(sensor_name); } }
+        public string sensor_name;
         public String iso_timestamp { 
             get {
                 return timestamp.ToString("yyyy-MM-ddTHH:mm:ss+02:00");
@@ -16,8 +32,8 @@ namespace NETMFBook.Sensors
         }
         private DateTime timestamp;
         public Measure(String name, SensStatus status, double value) {
-            this.sensor = name;
-            this.status = status;
+            this.sensor_name = name;
+            this.intstatus = status;
             this.value = value;
             this.timestamp = DateTime.Now;
         }
@@ -38,14 +54,14 @@ namespace NETMFBook.Sensors
                 return false;
             }
             Measure other = (Measure) obj;
-            return this.sensor.Equals(other.sensor) && this.value.Equals(other.value);
+            return this.sensor_id.Equals(other.sensor_id) && this.value.Equals(other.value);
         }
     
         // override object.GetHashCode
         public override int GetHashCode()
         {
             // TODO: write your implementation of GetHashCode() here
-            return this.sensor.GetHashCode() & this.value.GetHashCode();
+            return this.sensor_id.GetHashCode() & this.value.GetHashCode();
         }
         
     }

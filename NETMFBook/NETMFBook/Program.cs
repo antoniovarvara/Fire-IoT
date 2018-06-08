@@ -110,27 +110,28 @@ namespace NETMFBook
             Debug.Print("Mqtt created");
             MeasureOrchestrator.setMqtt(mqtt);
             MeasureDB.sd = sdCard;
-            TimeSync.update();
             Debug.Print("Time updated");
             while (!mqtt.isConnected())
             {
                 Thread.Sleep(1000);
             }
+            TimeSync.update();
             POSTContent pc = POSTContent.CreateTextBasedContent(GeoMessage.Json(geomessage));
             HttpRequest wc = HttpHelper.CreateHttpPostRequest("http://aws.r4ffy.info/geolocation", pc, "application/json");
             wc.ResponseReceived += wc_ResponseReceived;
             wc.SendRequest();
 
             //send a request with GeoMessage.Json(message) and set the configuration
-            SmokeSensor smoke = new SmokeSensor(breakout.CreateAnalogInput(GT.Socket.Pin.Four), "smoke");
-            COSensor co = new COSensor(breakout.CreateAnalogInput(GT.Socket.Pin.Five), "co");
-            FlameSensor flame = new FlameSensor(breakout.CreateAnalogInput(GT.Socket.Pin.Three), "flame");
-            TemperatureSensor temperature=new TemperatureSensor(breakout3.CreateAnalogInput(GT.Socket.Pin.Three),"temperature");
+            FlameSensor flame = new FlameSensor(breakout.CreateAnalogInput(GT.Socket.Pin.Three), "0");
+            SmokeSensor smoke = new SmokeSensor(breakout.CreateAnalogInput(GT.Socket.Pin.Four), "1");
+            COSensor co = new COSensor(breakout.CreateAnalogInput(GT.Socket.Pin.Five), "2");
+            TemperatureSensor temperature=new TemperatureSensor(breakout3.CreateAnalogInput(GT.Socket.Pin.Three),"3");
             registerSensor(temperature);
             registerSensor(smoke);
             registerSensor(co);
             registerSensor(flame);
             pubTimer(3000);
+            pubOldTimer(2000);
         }
 
         void wc_ResponseReceived(HttpRequest sender, HttpResponse response)
@@ -142,6 +143,7 @@ namespace NETMFBook
                 Double lat = (Double)((System.Collections.Hashtable)location)["lat"];
                 Double lng = (Double)((System.Collections.Hashtable)location)["lng"];
                 mqtt.Publish("cfg", Configuration.Json(new Configuration(lat, lng)));
+                StatusLed.led.SetLed(4, true);
             }
             catch (Exception)
             {
@@ -160,7 +162,13 @@ namespace NETMFBook
             MeasureDB.Timer = timer;
             timer.Start();
         }
-
+        private void pubOldTimer(int time = 20000)
+        {
+            GT.Timer timer = new GT.Timer(time);
+            timer.Tick += (s) => { s.Stop(); mqtt.PublishOld(MeasureOrchestrator.id); s.Start(); };
+            MeasureDB.Timer = timer;
+            timer.Start();
+        }
 
         private void DisplayTimer(int time = 1000)
         {

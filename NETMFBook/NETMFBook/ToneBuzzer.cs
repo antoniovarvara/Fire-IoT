@@ -46,7 +46,7 @@ namespace NETMFBook.Sensors
         }
         
         public bool sound = false;
-        private int tempo = 70;
+        private int tempo = 60;
         PWM myPWM;
         /*
         public ToneBuzzer(Gadgeteer.SocketInterfaces.PwmOutput myPwm)
@@ -106,7 +106,7 @@ namespace NETMFBook.Sensors
         public void Play(Tone t)
         {
             if (!sound) return;
-            Play(t.frequency, (int)t.duration);
+            Play(t.frequency, (int)t.duration*tempo/100);
         }
 
         public void Play(Tone[] tones)
