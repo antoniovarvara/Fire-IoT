@@ -14,7 +14,11 @@ namespace NETMFBook
         private const int localTimeZone = +2 * 60; //CEST
 
         public static void update() {
-
+            DateTime DT = GHI.Processor.RealTimeClock.GetDateTime();
+            if (DT.Ticks > 130717343174511258) {
+                Utility.SetLocalTime(DT);
+                return;
+            }
             try
             {
                 connectionEvent.WaitOne();
@@ -80,6 +84,7 @@ namespace NETMFBook
                 Object o = Json.NETMF.JsonSerializer.DeserializeString(response.Text);
                 long timestamp = (long)((System.Collections.Hashtable)o)["timestamp"];
                 Utility.SetLocalTime(new DateTime(timestamp * TimeSpan.TicksPerSecond + unixStart.Ticks));
+                GHI.Processor.RealTimeClock.SetDateTime(DateTime.Now);
                 timeSetted.Set();
             }
             catch (Exception)

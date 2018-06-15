@@ -12,7 +12,7 @@ namespace NETMFBook.Database
     public static class MeasureDB
     {
         public static GT.Timer Timer { get; set; }
-        public static ArrayList messages = new ArrayList();
+        //public static ArrayList messages = new ArrayList();
         private static long id;
         public static SDCard sd { get; set; }
         private const long MAX_N_FILE = 300;
@@ -25,7 +25,7 @@ namespace NETMFBook.Database
             {
 
                 String filename = "measure_" + System.Guid.NewGuid();
-                messages.Add(filename);
+                //messages.Add(filename);
                 Debug.Print("Created new file " + filename + ": " + m);
                 sd.StorageDevice.WriteFile(filename, data);
                 id = ((id + 1) % MAX_N_FILE);
@@ -73,10 +73,10 @@ namespace NETMFBook.Database
                     Debug.Print("Files available on " + rootDirectory + ":");
                     for (int i = 0; i < files.Length; i++)
                         Debug.Print(files[i]);
-                    if (messages.Count == 0) return false;
-                    Debug.Print(messages.Count + " pending measures");
-                    n = messages.Count;
-                    //n = sd.StorageDevice.ListFiles("").Length;
+                    //if (messages.Count == 0) return false;
+                    //Debug.Print(messages.Count + " pending measures");
+                    //n = messages.Count;
+                    n = sd.StorageDevice.ListFiles("").Length;
                     DisplayLCD.addSDInfo(true, sd.StorageDevice.ListFiles("").Length);
                     Debug.Print("File in sd " + n);
                 }
@@ -119,10 +119,10 @@ namespace NETMFBook.Database
                     for (int i = 0; i < files.Length; i++)
                         Debug.Print(files[i]);
                     String filename = "";
-                    if (messages.Count > 0)
-                    {
-                        filename = (String)messages[0];
-                        messages.RemoveAt(0);
+                    if (files.Length>0) { 
+                    //if (messages.Count > 0){
+                        filename = files[0];//(String)messages[0];
+                        //messages.RemoveAt(0);
                         Debug.Print("Removed " + filename);
                         FileStream f = sd.StorageDevice.OpenRead(filename);
                         StreamReader reader = new StreamReader(f);
