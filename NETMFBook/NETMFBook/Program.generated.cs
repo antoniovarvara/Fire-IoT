@@ -21,7 +21,7 @@ namespace NETMFBook {
         /// <summary>The Ethernet J11D module using socket 7 of the mainboard.</summary>
         private Gadgeteer.Modules.GHIElectronics.EthernetJ11D ethernetJ11D;
         
-        /// <summary>The Breakout module using socket 9 of the mainboard.</summary>
+        /// <summary>The Breakout module using socket 11 of the mainboard.</summary>
         private Gadgeteer.Modules.GHIElectronics.Breakout breakout;
         
         /// <summary>The Display TE35 module using sockets 14, 13 and 12 of the mainboard.</summary>
@@ -33,7 +33,7 @@ namespace NETMFBook {
         /// <summary>The SD Card module using socket 5 of the mainboard.</summary>
         private Gadgeteer.Modules.GHIElectronics.SDCard sdCard;
         
-        /// <summary>The Breakout module using socket 11 of the mainboard.</summary>
+        /// <summary>The Breakout module using socket 9 of the mainboard.</summary>
         private Gadgeteer.Modules.GHIElectronics.Breakout breakout2;
         
         /// <summary>The Breakout module using socket 10 of the mainboard.</summary>
@@ -66,11 +66,11 @@ namespace NETMFBook {
         private void InitializeModules() {
             this.usbClientDP = new GTM.GHIElectronics.USBClientDP(1);
             this.ethernetJ11D = new GTM.GHIElectronics.EthernetJ11D(7);
-            this.breakout = new GTM.GHIElectronics.Breakout(9);
+            this.breakout = new GTM.GHIElectronics.Breakout(11);
             this.displayTE35 = new GTM.GHIElectronics.DisplayTE35(14, 13, 12, Socket.Unused);
             this.ledStrip = new GTM.GHIElectronics.LEDStrip(8);
             this.sdCard = new GTM.GHIElectronics.SDCard(5);
-            this.breakout2 = new GTM.GHIElectronics.Breakout(11);
+            this.breakout2 = new GTM.GHIElectronics.Breakout(9);
             this.breakout3 = new GTM.GHIElectronics.Breakout(10);
             this.wifi = new GTM.GHIElectronics.WiFiRS21(6);
         }

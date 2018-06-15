@@ -35,7 +35,17 @@ namespace NETMFBook
             timer.Tick += timer_Tick;
             timer.Start();
             DisplayLCD.addSDInfo(false, 0);
-            new Thread(() => init()).Start();
+            new Thread(() => {
+                try
+                {
+                    init();
+                }
+                catch (Exception)
+                {
+                    PowerState.RebootDevice(true);
+                }
+                
+            }).Start();
             Debug.Print("Program Started");
             
         }
@@ -111,15 +121,21 @@ namespace NETMFBook
             MeasureOrchestrator.setMqtt(mqtt);
             MeasureDB.sd = sdCard;
             Debug.Print("Time updated");
+            TimeSync.update();
             while (!mqtt.isConnected())
             {
                 Thread.Sleep(1000);
             }
-            TimeSync.update();
             POSTContent pc = POSTContent.CreateTextBasedContent(GeoMessage.Json(geomessage));
-            HttpRequest wc = HttpHelper.CreateHttpPostRequest("http://aws.r4ffy.info/geolocation", pc, "application/json");
-            wc.ResponseReceived += wc_ResponseReceived;
-            wc.SendRequest();
+            try
+            {
+                HttpRequest wc = HttpHelper.CreateHttpPostRequest("http://52.57.156.220/geolocation", pc, "application/json");
+                wc.ResponseReceived += wc_ResponseReceived;
+                wc.SendRequest();
+            }
+            catch (Exception) {
+                mqtt.Publish("cfg", Configuration.Json(new Configuration(45.0631, 7.66004)));
+            }
 
             //send a request with GeoMessage.Json(message) and set the configuration
             FlameSensor flame = new FlameSensor(breakout.CreateAnalogInput(GT.Socket.Pin.Three), "0");

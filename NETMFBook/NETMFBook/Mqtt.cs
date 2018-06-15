@@ -8,6 +8,7 @@ using System.Threading;
 using NETMFBook.Database;
 using NETMFBook.Sensors;
 using System.Collections;
+using System.Reflection;
 namespace NETMFBook
 {
     public class Mqtt
@@ -16,16 +17,21 @@ namespace NETMFBook
         private MqttClient client;
         private Boolean isconnecting = false;
         private Hashtable pendingSend = new Hashtable();
+        private Thread connectThread;
         public Mqtt() {
-            client = new MqttClient(EndPoint);
+            this.client=newMqttClient();
+            connectInfinite();
+        }
+        private MqttClient newMqttClient()
+        {
+            MqttClient client = new MqttClient(EndPoint);
             //client.Settings.InflightQueueSize = 5;
             client.ConnectionClosed += client_ConnectionClosed;
             client.MqttMsgPublishReceived += client_MqttMsgPublishReceived;
             client.MqttMsgPublished += client_MqttMsgPublished;
             DisplayLCD.addMqttInfo(false);
-            connectInfinite();
+            return client;
         }
-
         void client_MqttMsgPublished(object sender, MqttMsgPublishedEventArgs e)
         {
             if (!e.IsPublished)
@@ -43,39 +49,40 @@ namespace NETMFBook
             return client.IsConnected;
         }
         public void connectInfinite() {
-                if (isconnecting == true) {
+            lock (client)
+            {
+                if (isconnecting == true && connectThread.IsAlive)
+                {
                     return;
                 }
                 else
                 {
                     isconnecting = true;
-                }
-            
-            new Thread(() =>
-            {
-                lock (client)
-                {
-                    while (client.IsConnected == false)
+                    connectThread = new Thread(() =>
                     {
-                        try
+                        while (client.IsConnected == false)
                         {
-                            Thread.Sleep(2000);
-                            connect();
-                            isconnecting = false;
-                            break;
-                        }
-                        catch (Exception)
-                        {
-                            Debug.Print("MQTT Connection FAILED");
+                            try
+                            {
+                                Thread.Sleep(2000);
+                                connect();
+                                isconnecting = false;
+                                break;
+                            }
+                            catch (Exception)
+                            {
+                                Debug.Print("MQTT Connection FAILED");
 
+                            }
                         }
-                    }
-                 }
-            }).Start();
+                    });
+                }
+            }
+            connectThread.Start();
                 
         }
         private void connect() {
-            client.Connect("Fire_sensor_board",null,null,true,3);
+            client.Connect("Fire_sensor_board",null,null,true,1);
             this.Subscribe("incendio");
             StatusLed.led.SetLed(3, true);
             DisplayLCD.addMqttInfo(true);
@@ -107,7 +114,7 @@ namespace NETMFBook
         {
             try
             {
-                if (client.IsConnected == false)
+                if (client.IsConnected == false || ((Queue)client.GetType().GetField("inflightQueue", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(client)).Count > 1)
                 {
                     this.connectInfinite();
                     Debug.Print("MQTT Publish store in sd: "+ Message);
@@ -136,9 +143,12 @@ namespace NETMFBook
                 return 0;
             }
         }
+        int count;
         public ushort PublishOld(String Topic, String Message=null) {
-            if (client.IsConnected == true && MeasureDB.hasPendingMeasure())
+            int inflight = ((Queue)client.GetType().GetField("inflightQueue", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(client)).Count;
+            if (client.IsConnected == true && MeasureDB.hasPendingMeasure() && inflight <= 1)
             {
+                count = 0;
                 if (Topic.Equals("cfg"))
                 {
                     return 0;
@@ -160,6 +170,15 @@ namespace NETMFBook
                     }
                     return 0;
                 }
+            }
+            else if (client.IsConnected == true && MeasureDB.hasPendingMeasure() && inflight > 1 && count++>10)
+            {
+                this.client = newMqttClient();
+                connectInfinite();
+            }
+            else
+            {
+                connectInfinite();
             }
             return 0;
         }

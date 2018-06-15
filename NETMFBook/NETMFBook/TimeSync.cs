@@ -51,7 +51,7 @@ namespace NETMFBook
                     try
                     {
 
-                        HttpRequest requestTime = HttpHelper.CreateHttpGetRequest("http://api.timezonedb.com/v2/get-time-zone?key=7UFPFA9D0NVV&by=zone&zone=CEST&format=json");
+                        HttpRequest requestTime = HttpHelper.CreateHttpGetRequest("http://52.57.156.220/time");
                         requestTime.ResponseReceived += time_ResponseReceived;
                         requestTime.SendRequest();
                         timeSetted.WaitOne();

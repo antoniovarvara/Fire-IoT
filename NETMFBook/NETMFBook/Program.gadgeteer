@@ -85,8 +85,8 @@
           <moduleHasSocketUses Id="2d8c51fd-8c20-40cc-a01c-9a7cf90a18b2">
             <socketUse Id="e120ef48-c974-48cd-9573-a0649d50d148">
               <socket>
-                <socketUseReferencesSocket Id="cdbaaebe-da37-499d-a4b0-edbc55859725">
-                  <socketMoniker Id="409b7d8b-66c2-4447-ab4c-27ab90dc85be" />
+                <socketUseReferencesSocket Id="8c167bdb-4cc8-44d1-bfce-ca0f4627aad2">
+                  <socketMoniker Id="21adf1a7-8fc5-42f1-baf2-bda48647ef0c" />
                 </socketUseReferencesSocket>
               </socket>
             </socketUse>
@@ -166,8 +166,8 @@
           <moduleHasSocketUses Id="dc6a0422-a45c-469d-98af-2cd59bfed484">
             <socketUse Id="a73a1353-9b9a-41cc-b8a1-7148ea4e240e">
               <socket>
-                <socketUseReferencesSocket Id="bfa7bb27-c2d6-4198-9fb0-e9f5c6fd7be5">
-                  <socketMoniker Id="21adf1a7-8fc5-42f1-baf2-bda48647ef0c" />
+                <socketUseReferencesSocket Id="77c283ec-5cef-4916-b3ee-6b9361291dc1">
+                  <socketMoniker Id="409b7d8b-66c2-4447-ab4c-27ab90dc85be" />
                 </socketUseReferencesSocket>
               </socket>
             </socketUse>
@@ -206,9 +206,4 @@
       </module>
     </gadgeteerModelHasGadgeteerHardware>
   </gadgeteerHardware>
-  <comments>
-    <gadgeteerModelHasComments Id="cd16c527-5431-4f97-be85-594a7f3370cc">
-      <comment Id="a646d8d2-790c-460f-9f6d-66b1f29c1a0a" text="Tip: To have the designer connect all modules for you, right-click the diagram, and then click 'Connect all modules'." />
-    </gadgeteerModelHasComments>
-  </comments>
 </gadgeteerModel>
