@@ -23,9 +23,10 @@ namespace NETMFBook.Database
             byte[] data = Encoding.UTF8.GetBytes(m);
             lock (sd)
             {
-                String filename = "measure_" + id;
+
+                String filename = "measure_" + System.Guid.NewGuid();
                 messages.Add(filename);
-                Debug.Print("Created new file " + id + ": " + m);
+                Debug.Print("Created new file " + filename + ": " + m);
                 sd.StorageDevice.WriteFile(filename, data);
                 id = ((id + 1) % MAX_N_FILE);
                 /*if (messages.Count < 3 / 4 * MAX_N_FILE)

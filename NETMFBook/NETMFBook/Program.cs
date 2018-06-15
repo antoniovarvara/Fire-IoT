@@ -93,7 +93,7 @@ namespace NETMFBook
             //byte[] data = Encoding.UTF8.GetBytes("Hello World!");
             //sdCard.StorageDevice.WriteFile("measure" + 0, data);
             //sdCard.StorageDevice.CreateDirectory(@"test");
-            if (VolumeInfo.GetVolumes()[0].IsFormatted)
+            /*if (VolumeInfo.GetVolumes()[0].IsFormatted)
             {
                 string rootDirectory =
                     VolumeInfo.GetVolumes()[0].RootDirectory;
@@ -112,7 +112,7 @@ namespace NETMFBook
             {
                 Debug.Print("Storage is not formatted. " +
                     "Format on PC with FAT32/FAT16 first!");
-            }
+            }*/
             DisplayLCD.addSDInfo(true,0);
             Ethernet eth = new Ethernet(ethernetJ11D);
             Debug.Print("Ethernet created");
